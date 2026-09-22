@@ -95,35 +95,19 @@
       border: 2px solid #13773b !important;
     }
 
-    /* ================================================================
-       [★ 카드를 좌우로 옮겨 높이가 달라질 때 라인/색상 아래까지 채움 ★]
-       ================================================================ */
-    .item-row-container {
-      display: flex !important;
-      align-items: stretch !important; /* 좌측 번호와 우측 콘텐츠의 높이를 100% 일치 */
-    }
-
-    .col-no-cell {
-      height: auto !important; /* 부모 행의 늘어난 높이에 맞춰 자동으로 100% 채움 */
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
-
     .drop-slot-area {
       min-height: 48px;
-      flex: 1 1 auto; /* 공간이 남으면 아래까지 자연스럽게 확장 */
       transition: background-color 0.2s, border-color 0.2s;
     }
 
-    /* 실속형 슬롯 기본 및 비었을 때 스타일 */
-    .drop-slot-blue {
+    /* Blue empty slot */
+    .drop-slot-blue:empty {
       background-color: #f8fafc;
       border: 1px dashed #cbd5e1;
     }
 
-    /* 고급형 슬롯 기본 및 비었을 때 스타일 */
-    .drop-slot-green {
+    /* Green empty slot */
+    .drop-slot-green:empty {
       background-color: #f2f9f4;
       border: 1px dashed #badbc5;
     }
@@ -132,9 +116,9 @@
        [★ 모바일 가로 & 태블릿 전체 폭 축소 + 중앙 50:50 반반 정렬 CSS ★]
        ================================================================ */
     
-    /* 1. 기본 메인 컨테이너 폭을 슬림하게 제한하여 중앙 배치 */
+    /* 1. 기본 메인 컨테이너 폭을 슬림하게 제한하여 중앙 배치 (너무 커지지 않음) */
     main {
-      max-width: 660px !important;
+      max-width: 660px !important; /* 과도하게 넓어지지 않도록 최적화 */
       width: 100% !important;
       margin-left: auto !important;
       margin-right: auto !important;
@@ -204,7 +188,7 @@
         font-size: 11px !important;
       }
       .col-no-cell {
-        width: 26px !important;
+        width: 26px !important; /* NO 번호 열 폭 축소 */
       }
       .box-item-card {
         padding: 2.5px 4px !important;
@@ -221,7 +205,7 @@
       }
     }
 
-    /* 4. 화면 높이가 낮은 스마트폰 가로 모드 추가 최적화 */
+    /* 4. 화면 높이가 낮은 스마트폰 가로 모드 (세로 480px 이하) 추가 최적화 */
     @media (orientation: landscape) and (max-height: 480px) {
       .calc-icon-wrapper {
         width: 24px !important;
@@ -633,19 +617,19 @@
           const isBlue = col === 'blue';
           const borderColor = isBlue ? 'border-[#b9d2eb]' : 'border-[#badbc5]';
           const noBg = isBlue ? 'bg-[#f7faff]' : 'bg-[#f8fbf9]';
-          const slotBgClass = isBlue ? 'drop-slot-blue' : 'drop-slot-green';
+          const slotBgClass = isBlue ? 'drop-slot-blue bg-slate-50/70 border-slate-200' : 'drop-slot-green bg-[#f4faf6] border-[#badbc5]';
 
           const groupEl = document.createElement('div');
           groupEl.className = 'item-row-container flex min-h-[64px] sm:min-h-[68px]';
           groupEl.innerHTML = `
-            <div class="col-no-cell w-7 sm:w-8 ${noBg} category-no-text border-r ${borderColor} select-none shrink-0">
+            <div class="col-no-cell w-7 sm:w-8 ${noBg} flex items-center justify-center category-no-text border-r ${borderColor} select-none shrink-0">
               ${cat.no}
             </div>
             <div class="flex-1 p-1 sm:p-1.5 flex flex-col justify-between min-w-0">
               <div class="flex items-center justify-between mb-0.5 select-none">
                 <span class="category-title-text font-bold">${cat.title}</span>
               </div>
-              <div class="drop-slot-area flex flex-col gap-0.5 p-0.5 rounded ${slotBgClass}"
+              <div class="drop-slot-area flex flex-col gap-0.5 p-0.5 rounded border border-dashed ${slotBgClass}"
                    data-col="${col}" data-cat="${cat.key}">
               </div>
             </div>
