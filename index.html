@@ -12,6 +12,10 @@
     tailwind.config = {
       theme: {
         extend: {
+          screens: {
+            // 태블릿 기준 분기점 명시 (iPad Mini, Air, Galaxy Tab 등 대응)
+            'tablet': '768px',
+          },
           colors: {
             blueBoard: {
               main: '#0267c1',
@@ -46,9 +50,10 @@
       font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif;
       touch-action: pan-y;
       background-color: #f1f5f9;
+      -webkit-text-size-adjust: 100%;
     }
 
-    /* Entire rounded box is draggable */
+    /* 태블릿/모바일 카드 전체 드래그 */
     .draggable-card {
       touch-action: none !important;
       cursor: grab;
@@ -84,6 +89,7 @@
       border: 2px solid #0267c1 !important;
       border-radius: 0.75rem !important;
       transform: scale(1.03) !important;
+      z-index: 9999 !important;
     }
 
     #board-green .sortable-drag {
@@ -209,31 +215,30 @@
     
     /* 12-1. [공통] 실속/고급 버튼 텍스트 크기, 두께, 자간 및 패딩 통합 조절 */
     .btn-badge-text-control {
-      font-size: 12px !important;       /* 글자 크기 (예: 11px, 12px, 13px, 14px 등 자유 조정) */
-      font-weight: 800 !important;      /* 글자 두께 (예: 600, 700, 800, 900) */
-      letter-spacing: -0.3px !important;/* 글자 자간 (예: -0.5px, 0px, 0.5px) */
-      line-height: 1.2 !important;      /* 줄간격 */
-      padding: 3px 8px !important;      /* 버튼 내부 여백 (상하 3px, 좌우 8px) */
-      border-radius: 9999px !important; /* 라운드 둥글기 */
+      font-size: 13px !important;        /* 원하는 글자 크기 (예: 11px, 12px, 13px 등) */
+      font-weight: 800 !important;       /* 원하는 글자 굵기 (예: 600, 700, 800) */
+      letter-spacing: -0.3px !important; /* 글자 간격 */
+      line-height: 1.2 !important;
+      padding: 3px 8px !important;       /* 버튼 안쪽 여백 (상하 3px, 좌우 8px) */
+      border-radius: 9999px !important;  /* 버튼 모서리 둥글기 */
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
       transition: all 0.15s ease-in-out;
     }
 
-    /* 12-2. '실속' 버튼 전용 텍스트 색상, 배경색, 테두리 */
+    /* 12-2. '실속' 버튼 색상 조절 */
     .badge-blue-text {
-      background-color: #dbeafe !important; /* 연파랑 배경 */
-      color: #0267c1 !important;            /* 파란색 글자 색상 */
-      border: 1px solid #93c5fd !important; /* 외곽 테두리 색상 */
-
+      background-color: #dbeafe !important; /* 배경색 */
+      color: #0267c1 !important;            /* 글자색 */
+      border: 1px solid #93c5fd !important; /* 테두리색 */
     }
 
-    /* 13. '고급' 버튼 전용 텍스트 색상, 배경색, 테두리 */
+    /* 13. '고급' 버튼 색상 조절 */
     .badge-green-text {
-      background-color: #dcfce7 !important; /* 연초록 배경 */
-      color: #13773b !important;            /* 초록색 글자 색상 */
-      border: 1px solid #86efac !important; /* 외곽 테두리 색상 */
+      background-color: #dcfce7 !important; /* 배경색 */
+      color: #13773b !important;            /* 글자색 */
+      border: 1px solid #86efac !important; /* 테두리색 */
     }
 
     /* 14. 하단 합계 라벨 텍스트 ('합계') */
@@ -274,39 +279,22 @@
       color: #64748b;
       line-height: 1.4;
     }
-	  
-	/* 12-1. [공통] 실속/고급 버튼 텍스트 크기, 두께, 자간 및 패딩 통합 조절 */
-.btn-badge-text-control {
-  font-size: 13px !important;        /* 원하는 글자 크기 (예: 11px, 12px, 13px 등) */
-  font-weight: 800 !important;       /* 원하는 글자 굵기 (예: 600, 700, 800) */
-  letter-spacing: -0.3px !important; /* 글자 간격 */
-  line-height: 1.2 !important;
-  padding: 3px 8px !important;       /* 버튼 안쪽 여백 (상하 3px, 좌우 8px) */
-  border-radius: 9999px !important;  /* 버튼 모서리 둥글기 */
-}
 
-/* 12-2. '실속' 버튼 색상 조절 */
-.badge-blue-text {
-  background-color: #dbeafe !important; /* 배경색 */
-  color: #0267c1 !important;            /* 글자색 */
-  border: 1px solid #93c5fd !important; /* 테두리색 */
-}
-
-/* 13. '고급' 버튼 색상 조절 */
-.badge-green-text {
-  background-color: #dcfce7 !important; /* 배경색 */
-  color: #13773b !important;            /* 글자색 */
-  border: 1px solid #86efac !important; /* 테두리색 */
-}  
-	  
-	  
+    /* 태블릿/모바일 스크롤바 미려하게 처리 */
+    #boards-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    #boards-container::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col items-center pb-12">
 
-  <!-- Header with calculator branding -->
-  <header class="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs px-4 sm:px-6 py-3">
-    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+  <!-- Header with calculator branding (태블릿 대응 폭 넓힘) -->
+  <header class="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs px-3 sm:px-6 py-3">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-3 self-start sm:self-center">
         <div class="w-11 h-11 rounded-2xl bg-gradient-to-b from-[#1b6cd9] to-[#0d9488] shadow-md flex items-center justify-center shrink-0">
           <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -346,12 +334,12 @@
     </div>
   </header>
 
-  <!-- Main Board Container -->
-  <main class="w-full max-w-6xl px-2 sm:px-6 mt-4 flex-1 flex justify-center">
-    <div id="boards-container" class="w-full flex flex-col md:flex-row gap-4 sm:gap-6 items-stretch justify-center">
+  <!-- Main Board Container (태블릿 및 PC에서 나란히 2컬럼 배치 유지) -->
+  <main class="w-full max-w-7xl px-2 sm:px-4 md:px-6 mt-4 flex-1 flex justify-center">
+    <div id="boards-container" class="w-full flex flex-col md:flex-row gap-3 sm:gap-4 md:gap-6 items-stretch justify-center overflow-x-auto pb-4">
 
       <!-- 실속형 (Blue Column) -->
-      <section id="board-blue" data-board="blue" class="board-column flex-1 w-full max-w-xl bg-white rounded-2xl shadow-sm border-2 border-blueBoard-main flex flex-col overflow-hidden transition-all duration-300">
+      <section id="board-blue" data-board="blue" class="board-column flex-1 min-w-[320px] md:min-w-[360px] max-w-full md:max-w-[600px] bg-white rounded-2xl shadow-sm border-2 border-blueBoard-main flex flex-col overflow-hidden transition-all duration-300">
         <div class="bg-blueBoard-main py-3.5 px-4 text-center select-none shadow-xs">
           <h2 class="board-title-text">실속형</h2>
         </div>
@@ -388,7 +376,7 @@
       </section>
 
       <!-- 고급형 (Green Column) -->
-      <section id="board-green" data-board="green" class="board-column flex-1 w-full max-w-xl bg-white rounded-2xl shadow-sm border-2 border-greenBoard-main flex flex-col overflow-hidden transition-all duration-300">
+      <section id="board-green" data-board="green" class="board-column flex-1 min-w-[320px] md:min-w-[360px] max-w-full md:max-w-[600px] bg-white rounded-2xl shadow-sm border-2 border-greenBoard-main flex flex-col overflow-hidden transition-all duration-300">
         <div class="bg-greenBoard-main py-3.5 px-4 text-center select-none shadow-xs">
           <h2 class="board-title-text">고급형</h2>
         </div>
@@ -615,17 +603,17 @@
           dragClass: 'sortable-drag',
           fallbackOnBody: true,
           swapThreshold: 0.65,
-          touchStartThreshold: 4,
+          touchStartThreshold: 3, /* 태블릿 터치 반응성 최적화 */
           filter: '.btn-check-toggle',
           preventOnFilter: false,
           delay: 0,
+          delayOnTouchOnly: false,
           onEnd: function (evt) {
             const card = evt.item;
             const targetSlot = evt.to;
             const targetCol = targetSlot.dataset.col;
             const prevCol = card.dataset.col;
 
-            // When transferred to opposing column, change hosting column & update styles
             if (targetCol !== prevCol) {
               applyColumnSwitch(card, prevCol, targetCol);
             }
@@ -667,7 +655,6 @@
       calculateTotals();
     }
 
-    // Updates card styling while keeping origin badge accurate
     function updateCardVisual(card, item, currentCol) {
       const isCurrentBlue = currentCol === 'blue';
       const activeStyle = isCurrentBlue 
@@ -679,7 +666,6 @@
 
       card.className = `draggable-card box-item-card relative flex items-center justify-between gap-2 rounded-xl border px-2.5 py-2 transition-all duration-150 ${item.selected ? activeStyle : defaultStyle}`;
 
-      // Check button style
       const checkBtn = card.querySelector('.btn-check-toggle');
       if (item.selected) {
         checkBtn.className = `btn-check-toggle w-5 h-5 rounded-full border shrink-0 flex items-center justify-center transition-colors ${isCurrentBlue ? 'bg-blueBoard-main border-blueBoard-main text-white' : 'bg-greenBoard-main border-greenBoard-main text-white'}`;
@@ -689,7 +675,6 @@
         checkBtn.innerHTML = '';
       }
 
-      // Text class update
       const textSpan = card.querySelector('.item-text');
       if (textSpan) {
         let textClass = 'item-text block truncate';
@@ -699,13 +684,14 @@
         textSpan.className = textClass;
       }
 
-      // Origin badge: '실속' for blue origin, '고급' for green origin
       const badge = card.querySelector('.tag-badge');
       if (badge) {
         const isOriginBlue = item.origin === 'blue';
         badge.textContent = isOriginBlue ? '실속' : '고급';
         badge.className = `tag-badge btn-badge-text-control shadow-2xs ${
           isOriginBlue ? 'badge-blue-text' : 'badge-green-text'
+
+
         }`;
       }
     }
@@ -729,7 +715,6 @@
       });
     }
 
-    // Calculates totals according to current column residence
     function calculateTotals() {
       let blueSum = 0;
       let greenSum = 0;
