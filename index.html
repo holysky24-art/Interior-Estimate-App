@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>인테리어 견적 산출기</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- SortableJS: Drag and Drop Library -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            blueBoard: {
+              main: '#0267c1',
+              sub: '#e9f2fa',
+              border: '#b9d2eb',
+              active: '#eaf4fd',
+              badgeBg: '#dbeafe',
+              badgeText: '#0267c1',
+              badgeBorder: '#93c5fd'
+            },
+            greenBoard: {
+              main: '#13773b',
+              sub: '#edf6f0',
+              border: '#badbc5',
+              active: '#eef8f2',
+              badgeBg: '#dcfce7',
+              badgeText: '#13773b',
+              badgeBorder: '#86efac'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif;
+      touch-action: pan-y;
+      background-color: #f1f5f9;
+    }
+
+    /* Entire rounded box is draggable */
+    .draggable-card {
+      touch-action: none !important;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .draggable-card:active {
+      cursor: grabbing;
+    }
+
+    /* Sortable states */
+    .sortable-ghost {
+      opacity: 0.3 !important;
+      background: #cbd5e1 !important;
+      border: 2px dashed #64748b !important;
+      transform: scale(0.98);
+    }
+
+    #board-green .sortable-ghost {
+      background: #d1fae5 !important;
+      border: 2px dashed #10b981 !important;
+    }
+
+    .sortable-chosen {
+      cursor: grabbing !important;
+    }
+
+    .sortable-drag {
+      opacity: 0.98 !important;
+      background-color: #ffffff !important;
+      box-shadow: 0 18px 36px -4px rgba(0, 0, 0, 0.25), 0 8px 16px -4px rgba(0, 0, 0, 0.12) !important;
+      border: 2px solid #0267c1 !important;
+      border-radius: 0.75rem !important;
+      transform: scale(1.03) !important;
+    }
+
+    #board-green .sortable-drag {
+      border: 2px solid #13773b !important;
+    }
+
+    .drop-slot-area {
+      min-height: 82px;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    /* Blue empty slot */
+    .drop-slot-blue:empty {
+      background-color: #f8fafc;
+      border: 1.5px dashed #cbd5e1;
+    }
+
+    /* Green empty slot */
+    .drop-slot-green:empty {
+      background-color: #f2f9f4;
+      border: 1.5px dashed #badbc5;
+    }
+
+    /* ================================================================
+       [전체 텍스트 CSS 컨트롤 센터 - 여기서 모든 폰트/색상 변경 가능]
+       ================================================================ */
+
+    /* 1. 최상단 헤더 메인 타이틀 */
+    .header-main-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+    }
+
+    /* 2. 최상단 헤더 서브 타이틀 */
+    .header-sub-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      letter-spacing: -0.2px;
+    }
+
+    /* 3. 상단 버튼 텍스트 (위치전환 / 전체선택 / 초기화) */
+    .btn-text-swap {
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .btn-text-select-all {
+      font-size: 12px;
+      font-weight: 600;
+      color: #334155;
+    }
+    .btn-text-reset {
+      font-size: 12px;
+      font-weight: 600;
+      color: #be123c;
+    }
+
+    /* 4. 보드 메인 타이틀 (실속형 / 고급형) */
+    .board-title-text {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      color: #ffffff;
+    }
+
+    /* 5. 서브헤더 'NO' 텍스트 */
+    .sub-header-no-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: 0px;
+    }
+
+    /* 6. 서브헤더 '품명' 텍스트 */
+    .sub-header-name-text {
+      font-size: 17px;
+      font-weight: 600;
+      color: #0f172a;
+      letter-spacing: 1px;
+    }
+
+    /* 7. 공종 번호 텍스트 (01, 02, 03 ...) */
+    .category-no-text {
+      font-size: 16px;
+      font-weight: 800;
+      color: #334155;
+    }
+
+    /* 8. 공종 분류명 텍스트 (벽체공사, 바닥공사 ...) */
+    .category-title-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    /* 9. 품목 박스 기본 텍스트 (광폭 합지, 실크 ...) */
+    .item-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1e293b;
+      line-height: 1.35;
+    }
+
+    /* 10. 체크(선택)되었을 때 실속형 컬럼 내 품목 텍스트 */
+    .item-text-selected-blue {
+      color: #0267c1 !important;
+      font-weight: 700 !important;
+    }
+
+    /* 11. 체크(선택)되었을 때 고급형 컬럼 내 품목 텍스트 */
+    .item-text-selected-green {
+      color: #13773b !important;
+      font-weight: 700 !important;
+    }
+
+    /* ================================================================
+       [★ 실속, 고급 버튼 텍스트 전용 컨트롤 CSS ★]
+       ================================================================ */
+    
+    /* 12-1. [공통] 실속/고급 버튼 텍스트 크기, 두께, 자간 및 패딩 통합 조절 */
+    .btn-badge-text-control {
+      font-size: 12px !important;       /* 글자 크기 (예: 11px, 12px, 13px, 14px 등 자유 조정) */
+      font-weight: 800 !important;      /* 글자 두께 (예: 600, 700, 800, 900) */
+      letter-spacing: -0.3px !important;/* 글자 자간 (예: -0.5px, 0px, 0.5px) */
+      line-height: 1.2 !important;      /* 줄간격 */
+      padding: 3px 8px !important;      /* 버튼 내부 여백 (상하 3px, 좌우 8px) */
+      border-radius: 9999px !important; /* 라운드 둥글기 */
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: all 0.15s ease-in-out;
+    }
+
+    /* 12-2. '실속' 버튼 전용 텍스트 색상, 배경색, 테두리 */
+    .badge-blue-text {
+      background-color: #dbeafe !important; /* 연파랑 배경 */
+      color: #0267c1 !important;            /* 파란색 글자 색상 */
+      border: 1px solid #93c5fd !important; /* 외곽 테두리 색상 */
+
+    }
+
+    /* 13. '고급' 버튼 전용 텍스트 색상, 배경색, 테두리 */
+    .badge-green-text {
+      background-color: #dcfce7 !important; /* 연초록 배경 */
+      color: #13773b !important;            /* 초록색 글자 색상 */
+      border: 1px solid #86efac !important; /* 외곽 테두리 색상 */
+    }
+
+    /* 14. 하단 합계 라벨 텍스트 ('합계') */
+    .total-label-text {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #ffffff;
+    }
+
+    /* 15. 합계 금액 숫자 텍스트 */
+    .total-amount-number {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: #ffffff;
+    }
+
+    /* 16. 합계 금액 단위 텍스트 ('원') */
+    .total-unit-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* 17. 하단 라운드 박스 안내 문구 1행 (철거 및 폐기물 별도) */
+    .notice-primary-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1e293b;
+      line-height: 1.4;
+    }
+
+    /* 18. 하단 라운드 박스 안내 문구 2행 (기본 견적외 별도 사항 추가) */
+    .notice-secondary-text {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #64748b;
+      line-height: 1.4;
+    }
+	  
+	/* 12-1. [공통] 실속/고급 버튼 텍스트 크기, 두께, 자간 및 패딩 통합 조절 */
+.btn-badge-text-control {
+  font-size: 13px !important;        /* 원하는 글자 크기 (예: 11px, 12px, 13px 등) */
+  font-weight: 800 !important;       /* 원하는 글자 굵기 (예: 600, 700, 800) */
+  letter-spacing: -0.3px !important; /* 글자 간격 */
+  line-height: 1.2 !important;
+  padding: 3px 8px !important;       /* 버튼 안쪽 여백 (상하 3px, 좌우 8px) */
+  border-radius: 9999px !important;  /* 버튼 모서리 둥글기 */
+}
+
+/* 12-2. '실속' 버튼 색상 조절 */
+.badge-blue-text {
+  background-color: #dbeafe !important; /* 배경색 */
+  color: #0267c1 !important;            /* 글자색 */
+  border: 1px solid #93c5fd !important; /* 테두리색 */
+}
+
+/* 13. '고급' 버튼 색상 조절 */
+.badge-green-text {
+  background-color: #dcfce7 !important; /* 배경색 */
+  color: #13773b !important;            /* 글자색 */
+  border: 1px solid #86efac !important; /* 테두리색 */
+}  
+	  
+	  
+  </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col items-center pb-12">
+
+  <!-- Header with calculator branding -->
+  <header class="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs px-4 sm:px-6 py-3">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3 self-start sm:self-center">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-b from-[#1b6cd9] to-[#0d9488] shadow-md flex items-center justify-center shrink-0">
+          <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+            <line x1="8" y1="6" x2="16" y2="6"></line>
+            <line x1="16" y1="14" x2="16" y2="18"></line>
+            <path d="M16 10h.01"></path>
+            <path d="M12 10h.01"></path>
+            <path d="M8 10h.01"></path>
+            <path d="M12 14h.01"></path>
+            <path d="M8 14h.01"></path>
+            <path d="M12 18h.01"></path>
+            <path d="M8 18h.01"></path>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="header-main-title">인테리어 견적 산출기</span>
+          <span class="header-sub-title">실속형 vs 고급형 비교 견적</span>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center gap-2 flex-wrap justify-end w-full sm:w-auto">
+        <button id="btn-swap-boards" class="px-3.5 py-2 btn-text-swap bg-slate-800 hover:bg-slate-900 rounded-xl shadow-xs transition active:scale-95 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+          </svg>
+          실속형 ⇄ 고급형 보드 위치 전환
+        </button>
+        <button id="btn-select-all" class="px-3 py-2 btn-text-select-all bg-slate-100 hover:bg-slate-200 rounded-xl transition active:scale-95">
+          전체 선택
+        </button>
+        <button id="btn-reset" class="px-3 py-2 btn-text-reset bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition active:scale-95">
+          초기화
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Board Container -->
+  <main class="w-full max-w-6xl px-2 sm:px-6 mt-4 flex-1 flex justify-center">
+    <div id="boards-container" class="w-full flex flex-col md:flex-row gap-4 sm:gap-6 items-stretch justify-center">
+
+      <!-- 실속형 (Blue Column) -->
+      <section id="board-blue" data-board="blue" class="board-column flex-1 w-full max-w-xl bg-white rounded-2xl shadow-sm border-2 border-blueBoard-main flex flex-col overflow-hidden transition-all duration-300">
+        <div class="bg-blueBoard-main py-3.5 px-4 text-center select-none shadow-xs">
+          <h2 class="board-title-text">실속형</h2>
+        </div>
+        
+        <!-- 실속형 서브헤더 -->
+        <div class="flex items-stretch bg-[#e9f2fa] border-b border-[#b9d2eb] select-none">
+          <div class="w-14 sm:w-16 flex items-center justify-center border-r border-[#b9d2eb] py-2 shrink-0">
+            <span class="sub-header-no-text">NO</span>
+          </div>
+          <div class="flex-1 flex items-center justify-center py-2">
+            <span class="sub-header-name-text">품명</span>
+          </div>
+        </div>
+
+        <div id="list-wrapper-blue" class="flex-1 divide-y divide-[#b9d2eb] bg-white">
+          <!-- Dynamic category slots -->
+        </div>
+
+        <!-- 실속형 합계 -->
+        <div class="bg-blueBoard-main py-3.5 px-5 flex items-center justify-between border-t-2 border-blue-800 select-none">
+          <span class="total-label-text">합계</span>
+          <div class="flex items-baseline gap-1">
+            <span id="total-val-blue" class="total-amount-number">0</span>
+            <span class="total-unit-text">원</span>
+          </div>
+        </div>
+
+        <!-- 실속형 합계 아래쪽 라운드 안내 박스 -->
+        <div class="p-3 bg-[#f8fbff] border-t border-[#b9d2eb]">
+          <div class="bg-white border border-[#b9d2eb] rounded-xl px-4 py-2.5 shadow-2xs flex flex-col items-center justify-center text-center gap-1 select-none">
+            <p class="notice-primary-text">※각 공정별 철거 및 폐기물 별도</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 고급형 (Green Column) -->
+      <section id="board-green" data-board="green" class="board-column flex-1 w-full max-w-xl bg-white rounded-2xl shadow-sm border-2 border-greenBoard-main flex flex-col overflow-hidden transition-all duration-300">
+        <div class="bg-greenBoard-main py-3.5 px-4 text-center select-none shadow-xs">
+          <h2 class="board-title-text">고급형</h2>
+        </div>
+        
+        <!-- 고급형 서브헤더 -->
+        <div class="flex items-stretch bg-[#edf6f0] border-b border-[#badbc5] select-none">
+          <div class="w-14 sm:w-16 flex items-center justify-center border-r border-[#badbc5] py-2 shrink-0">
+            <span class="sub-header-no-text">NO</span>
+          </div>
+          <div class="flex-1 flex items-center justify-center py-2">
+            <span class="sub-header-name-text">품명</span>
+          </div>
+        </div>
+
+        <div id="list-wrapper-green" class="flex-1 divide-y divide-[#badbc5] bg-white">
+          <!-- Dynamic category slots -->
+        </div>
+
+        <!-- 고급형 합계 -->
+        <div class="bg-greenBoard-main py-3.5 px-5 flex items-center justify-between border-t-2 border-green-800 select-none">
+          <span class="total-label-text">합계</span>
+          <div class="flex items-baseline gap-1">
+            <span id="total-val-green" class="total-amount-number">0</span>
+            <span class="total-unit-text">원</span>
+          </div>
+        </div>
+
+        <!-- 고급형 합계 아래쪽 라운드 안내 박스 -->
+        <div class="p-3 bg-[#f6fbf8] border-t border-[#badbc5]">
+          <div class="bg-white border border-[#badbc5] rounded-xl px-4 py-2.5 shadow-2xs flex flex-col items-center justify-center text-center gap-1 select-none">
+            <p class="notice-primary-text">※각 공정별 철거 및 폐기물 별도</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    const CATEGORIES = [
+      { key: 'wall', no: '01', title: '벽체공사' },
+      { key: 'floor', no: '02', title: '바닥공사' },
+      { key: 'bath', no: '03', title: '화장실 공사' },
+      { key: 'veranda', no: '04', title: '베란다 공사(1개소 기준)' },
+      { key: 'sink', no: '05', title: '씽크대 공사(10자 기준)' },
+      { key: 'paint_wood', no: '06', title: '페인트 공사 OR 목공사' },
+      { key: 'lighting', no: '07', title: '조명공사' }
+    ];
+
+    // Origin: 'blue' produces '실속' badge; 'green' produces '고급' badge permanently
+    const INITIAL_DATA = {
+      blue: [
+        { id: 'b1', cat: 'wall', origin: 'blue', name: '합지광폭', price: 20000, selected: false },
+        { id: 'b2', cat: 'wall', origin: 'blue', name: '부자재 및 틈새 퍼티 보수', price: 30000, selected: false },
+        { id: 'b3', cat: 'wall', origin: 'blue', name: '기본 평판 천장 몰딩 시공', price: 50000, selected: false },
+
+        { id: 'b4', cat: 'floor', origin: 'blue', name: '장판1.8T', price: 1650000, selected: false },
+        { id: 'b5', cat: 'floor', origin: 'blue', name: '친환경 무용제 황토 접착제', price: 220000, selected: false },
+        { id: 'b6', cat: 'floor', origin: 'blue', name: '화이트 평몰딩 걸레받이 마감', price: 180000, selected: false },
+
+        { id: 'b7', cat: 'bath', origin: 'blue', name: '일반타일 덧방/OEM도기교체', price: 1350000, selected: false },
+        { id: 'b8', cat: 'bath', origin: 'blue', name: '치마형 투피스 양변기 & 세면대', price: 780000, selected: false },
+        { id: 'b9', cat: 'bath', origin: 'blue', name: '슬라이드 거울장 및 기본 샤워수전', price: 420000, selected: false },
+
+        { id: 'b10', cat: 'veranda', origin: 'blue', name: '수성페인트', price: 450000, selected: false },
+        { id: 'b11', cat: 'veranda', origin: 'blue', name: '300각 논슬립 그레이 바닥타일', price: 320000, selected: false },
+        { id: 'b12', cat: 'veranda', origin: 'blue', name: '스테인리스 빨래건조대 교체', price: 130000, selected: false },
+
+        { id: 'b13', cat: 'sink', origin: 'blue', name: 'LPM/대리석/일반볼/수전/후드/가스쿡탑', price: 1850000, selected: false },
+        { id: 'b14', cat: 'sink', origin: 'blue', name: '기본 인조대리석 상판 마감', price: 450000, selected: false },
+        { id: 'b15', cat: 'sink', origin: 'blue', name: '3구 가스쿡탑 & 슬림 매립후드', price: 300000, selected: false },
+
+        { id: 'b16', cat: 'paint_wood', origin: 'blue', name: '걸레받이/천정몰딩/문짝 페인트', price: 550000, selected: false },
+        { id: 'b17', cat: 'paint_wood', origin: 'blue', name: '문선 몰딩 및 보수 목공 작업', price: 400000, selected: false },
+        { id: 'b18', cat: 'paint_wood', origin: 'blue', name: '걸레받이 틈새 실리콘 코킹 마감', price: 150000, selected: false },
+
+        { id: 'b19', cat: 'lighting', origin: 'blue', name: '일반조명', price: 450000, selected: false },
+        { id: 'b20', cat: 'lighting', origin: 'blue', name: '주방 LED 조명 & 현관 센서등', price: 180000, selected: false },
+        { id: 'b21', cat: 'lighting', origin: 'blue', name: '나노 고급 스위치 및 콘센트 교체', price: 220000, selected: false }
+      ],
+      green: [
+        { id: 'g1', cat: 'wall', origin: 'green', name: '실크', price: 1850000, selected: false },
+        { id: 'g2', cat: 'wall', origin: 'green', name: '올퍼티 올샌딩 하이엔드 하지작업', price: 650000, selected: false },
+        { id: 'g3', cat: 'wall', origin: 'green', name: '무몰딩 직각 코너 프리미엄 마감', price: 450000, selected: false },
+
+        { id: 'g4', cat: 'floor', origin: 'green', name: '강마루', price: 3400000, selected: false },
+        { id: 'g5', cat: 'floor', origin: 'green', name: '충격흡수/방음 특수 차음패드 시공', price: 450000, selected: false },
+        { id: 'g6', cat: 'floor', origin: 'green', name: '마이너스 히든 걸레받이 목공 일체', price: 350000, selected: false },
+
+        { id: 'g7', cat: 'bath', origin: 'green', name: '고급타일 덧방/브랜드도기시공', price: 2800000, selected: false },
+        { id: 'g8', cat: 'bath', origin: 'green', name: '아메리칸스탠다드 일체형 비데', price: 1350000, selected: false },
+        { id: 'g9', cat: 'bath', origin: 'green', name: '무광 니켈 매립수전 & 조적 욕조', price: 1100000, selected: false },
+
+        { id: 'g10', cat: 'veranda', origin: 'green', name: '탄성코트', price: 780000, selected: false },
+        { id: 'g11', cat: 'veranda', origin: 'green', name: '포세린 타일 + 아덱스 에폭시 줄눈', price: 580000, selected: false },
+        { id: 'g12', cat: 'veranda', origin: 'green', name: '단열 터닝도어 시공 및 결로차단', price: 340000, selected: false },
+
+        { id: 'g13', cat: 'sink', origin: 'green', name: 'PET/LG대리석/사각볼/고급수전/매립후드/인덕션', price: 3200000, selected: false },
+        { id: 'g14', cat: 'sink', origin: 'green', name: '스페인 천연 세라믹 상판 (12T)', price: 1400000, selected: false },
+        { id: 'g15', cat: 'sink', origin: 'green', name: '블룸 레일 & 깜포르테 사각 싱크볼', price: 950000, selected: false },
+
+        { id: 'g16', cat: 'paint_wood', origin: 'green', name: '걸레받이/천정몰딩/문짝 교체', price: 1250000, selected: false },
+        { id: 'g17', cat: 'paint_wood', origin: 'green', name: '히든도어 9mm 문선 목공 맞춤제작', price: 1100000, selected: false },
+        { id: 'g18', cat: 'paint_wood', origin: 'green', name: '간접 등박스 및 시스템 에어컨 단내림', price: 650000, selected: false },
+
+        { id: 'g19', cat: 'lighting', origin: 'green', name: '걸레받이/천정몰딩/문짝 교체', price: 1200000, selected: false },
+        { id: 'g20', cat: 'lighting', origin: 'green', name: '스마트 IoT 조명 제어 & 커튼 간접등', price: 550000, selected: false },
+        { id: 'g21', cat: 'lighting', origin: 'green', name: '르그랑 아테오 유럽형 하이엔드 스위치', price: 450000, selected: false }
+      ]
+    };
+
+    let appState = {
+      blue: JSON.parse(JSON.stringify(INITIAL_DATA.blue)),
+      green: JSON.parse(JSON.stringify(INITIAL_DATA.green))
+    };
+  </script>
+
+  <!-- Rendering and dynamic UI logic -->
+  <script>
+    function renderBoardHTML() {
+      ['blue', 'green'].forEach(col => {
+        const wrapper = document.getElementById(`list-wrapper-${col}`);
+        wrapper.innerHTML = '';
+
+        CATEGORIES.forEach(cat => {
+          const isBlue = col === 'blue';
+          const borderColor = isBlue ? 'border-[#b9d2eb]' : 'border-[#badbc5]';
+          const noBg = isBlue ? 'bg-[#f7faff]' : 'bg-[#f8fbf9]';
+          const slotBgClass = isBlue ? 'drop-slot-blue bg-slate-50/70 border-slate-200' : 'drop-slot-green bg-[#f4faf6] border-[#badbc5]';
+
+          const groupEl = document.createElement('div');
+          groupEl.className = 'flex min-h-[105px]';
+          groupEl.innerHTML = `
+            <div class="w-14 sm:w-16 ${noBg} flex items-center justify-center category-no-text border-r ${borderColor} select-none shrink-0">
+              ${cat.no}
+            </div>
+            <div class="flex-1 p-2 sm:p-2.5 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-1.5 select-none">
+                <span class="category-title-text">${cat.title}</span>
+              </div>
+              <div class="drop-slot-area flex flex-col gap-1.5 p-1 rounded-xl border border-dashed ${slotBgClass}"
+                   data-col="${col}" data-cat="${cat.key}">
+              </div>
+            </div>
+          `;
+          wrapper.appendChild(groupEl);
+        });
+      });
+    }
+
+    // Creates the draggable rounded item card
+    function createBoxCard(item, col) {
+      const isBlueCol = col === 'blue';
+      const activeStyle = isBlueCol 
+        ? 'bg-blueBoard-active border-blueBoard-main shadow-xs ring-1 ring-blueBoard-main' 
+        : 'bg-greenBoard-active border-greenBoard-main shadow-xs ring-1 ring-greenBoard-main';
+      const defaultStyle = isBlueCol
+        ? 'bg-white border-slate-300 hover:border-slate-400 hover:shadow-xs'
+        : 'bg-white border-[#badbc5] hover:border-green-400 hover:shadow-xs';
+
+      // Badge displays the item's original type: '실속' if origin is blue, '고급' if origin is green
+      const isOriginBlue = item.origin === 'blue';
+      const badgeText = isOriginBlue ? '실속' : '고급';
+      const badgeClass = isOriginBlue ? 'badge-blue-text' : 'badge-green-text';
+
+      // Text class when selected
+      let textClass = 'item-text block truncate';
+      if (item.selected) {
+        textClass += isBlueCol ? ' item-text-selected-blue' : ' item-text-selected-green';
+      }
+
+      const card = document.createElement('div');
+      card.className = `draggable-card box-item-card relative flex items-center justify-between gap-2 rounded-xl border px-2.5 py-2 transition-all duration-150 ${item.selected ? activeStyle : defaultStyle}`;
+      card.dataset.id = item.id;
+      card.dataset.origin = item.origin;
+      card.dataset.price = item.price;
+      card.dataset.col = col;
+
+      card.innerHTML = `
+        <!-- Checkbox Button -->
+        <button type="button" class="btn-check-toggle w-5 h-5 rounded-full border shrink-0 flex items-center justify-center transition-colors ${item.selected ? (isBlueCol ? 'bg-blueBoard-main border-blueBoard-main text-white' : 'bg-greenBoard-main border-greenBoard-main text-white') : (isBlueCol ? 'border-slate-300 bg-white hover:border-slate-400' : 'border-[#badbc5] bg-white hover:border-green-400')}" title="클릭 시 합계 금액이 합산/차감됩니다">
+          ${item.selected ? '<svg class="w-3 h-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
+        </button>
+
+        <!-- Product Name (Price is hidden) -->
+        <div class="flex-1 min-w-0 pointer-events-none">
+          <span class="${textClass}">${escapeHtml(item.name)}</span>
+        </div>
+
+        <!-- Right Badge: Maintains product origin ('실속' or '고급') -->
+        <div class="badge-container shrink-0 pointer-events-none">
+          <span class="tag-badge btn-badge-text-control shadow-2xs ${badgeClass}">
+            ${badgeText}
+          </span>
+        </div>
+      `;
+
+      attachCardEvents(card);
+      return card;
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function attachCardEvents(card) {
+      const checkBtn = card.querySelector('.btn-check-toggle');
+      checkBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSelectCard(card);
+      });
+    }
+  </script>
+
+  <!-- Drag-and-Drop and Calculation Scripts -->
+  <script>
+    function initializeSortables() {
+      document.querySelectorAll('.drop-slot-area').forEach(slot => {
+        new Sortable(slot, {
+          group: 'quote-shared-group',
+          animation: 200,
+          ghostClass: 'sortable-ghost',
+          chosenClass: 'sortable-chosen',
+          dragClass: 'sortable-drag',
+          fallbackOnBody: true,
+          swapThreshold: 0.65,
+          touchStartThreshold: 4,
+          filter: '.btn-check-toggle',
+          preventOnFilter: false,
+          delay: 0,
+          onEnd: function (evt) {
+            const card = evt.item;
+            const targetSlot = evt.to;
+            const targetCol = targetSlot.dataset.col;
+            const prevCol = card.dataset.col;
+
+            // When transferred to opposing column, change hosting column & update styles
+            if (targetCol !== prevCol) {
+              applyColumnSwitch(card, prevCol, targetCol);
+            }
+
+            syncOrderFromDOM();
+            calculateTotals();
+          }
+        });
+      });
+    }
+
+    function applyColumnSwitch(card, fromCol, toCol) {
+      card.dataset.col = toCol;
+      const id = card.dataset.id;
+      const item = findItemById(id);
+
+      const fromList = appState[fromCol];
+      const idx = fromList.findIndex(x => x.id === id);
+      if (idx > -1) {
+        fromList.splice(idx, 1);
+        appState[toCol].push(item);
+      }
+
+      updateCardVisual(card, item, toCol);
+    }
+
+    function findItemById(id) {
+      return appState.blue.find(x => x.id === id) || appState.green.find(x => x.id === id);
+    }
+
+    function toggleSelectCard(card) {
+      const id = card.dataset.id;
+      const col = card.dataset.col;
+      const item = findItemById(id);
+      if (!item) return;
+
+      item.selected = !item.selected;
+      updateCardVisual(card, item, col);
+      calculateTotals();
+    }
+
+    // Updates card styling while keeping origin badge accurate
+    function updateCardVisual(card, item, currentCol) {
+      const isCurrentBlue = currentCol === 'blue';
+      const activeStyle = isCurrentBlue 
+        ? 'bg-blueBoard-active border-blueBoard-main shadow-xs ring-1 ring-blueBoard-main' 
+        : 'bg-greenBoard-active border-greenBoard-main shadow-xs ring-1 ring-greenBoard-main';
+      const defaultStyle = isCurrentBlue
+        ? 'bg-white border-slate-300 hover:border-slate-400 hover:shadow-xs'
+        : 'bg-white border-[#badbc5] hover:border-green-400 hover:shadow-xs';
+
+      card.className = `draggable-card box-item-card relative flex items-center justify-between gap-2 rounded-xl border px-2.5 py-2 transition-all duration-150 ${item.selected ? activeStyle : defaultStyle}`;
+
+      // Check button style
+      const checkBtn = card.querySelector('.btn-check-toggle');
+      if (item.selected) {
+        checkBtn.className = `btn-check-toggle w-5 h-5 rounded-full border shrink-0 flex items-center justify-center transition-colors ${isCurrentBlue ? 'bg-blueBoard-main border-blueBoard-main text-white' : 'bg-greenBoard-main border-greenBoard-main text-white'}`;
+        checkBtn.innerHTML = '<svg class="w-3 h-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>';
+      } else {
+        checkBtn.className = `btn-check-toggle w-5 h-5 rounded-full border shrink-0 flex items-center justify-center transition-colors ${isCurrentBlue ? 'border-slate-300 bg-white hover:border-slate-400' : 'border-[#badbc5] bg-white hover:border-green-400'}`;
+        checkBtn.innerHTML = '';
+      }
+
+      // Text class update
+      const textSpan = card.querySelector('.item-text');
+      if (textSpan) {
+        let textClass = 'item-text block truncate';
+        if (item.selected) {
+          textClass += isCurrentBlue ? ' item-text-selected-blue' : ' item-text-selected-green';
+        }
+        textSpan.className = textClass;
+      }
+
+      // Origin badge: '실속' for blue origin, '고급' for green origin
+      const badge = card.querySelector('.tag-badge');
+      if (badge) {
+        const isOriginBlue = item.origin === 'blue';
+        badge.textContent = isOriginBlue ? '실속' : '고급';
+        badge.className = `tag-badge btn-badge-text-control shadow-2xs ${
+          isOriginBlue ? 'badge-blue-text' : 'badge-green-text'
+        }`;
+      }
+    }
+
+    function syncOrderFromDOM() {
+      ['blue', 'green'].forEach(col => {
+        const board = document.querySelector(`.board-column[data-board="${col}"]`);
+        const cards = board.querySelectorAll('.box-item-card');
+        const newList = [];
+
+        cards.forEach(c => {
+          const id = c.dataset.id;
+          const item = findItemById(id);
+          if (item) {
+            c.dataset.col = col;
+            newList.push(item);
+          }
+        });
+
+        appState[col] = newList;
+      });
+    }
+
+    // Calculates totals according to current column residence
+    function calculateTotals() {
+      let blueSum = 0;
+      let greenSum = 0;
+
+      document.querySelectorAll('#board-blue .box-item-card').forEach(c => {
+        const item = findItemById(c.dataset.id);
+        if (item && item.selected) {
+          blueSum += Number(c.dataset.price) || 0;
+        }
+      });
+
+      document.querySelectorAll('#board-green .box-item-card').forEach(c => {
+        const item = findItemById(c.dataset.id);
+        if (item && item.selected) {
+          greenSum += Number(c.dataset.price) || 0;
+        }
+      });
+
+      document.getElementById('total-val-blue').textContent = blueSum.toLocaleString('ko-KR');
+      document.getElementById('total-val-green').textContent = greenSum.toLocaleString('ko-KR');
+    }
+
+    function populateInitialCards() {
+      ['blue', 'green'].forEach(col => {
+        appState[col].forEach(item => {
+          const slot = document.querySelector(`.drop-slot-area[data-col="${col}"][data-cat="${item.cat}"]`);
+          if (slot) {
+            slot.appendChild(createBoxCard(item, col));
+          }
+        });
+      });
+    }
+
+    // Top action handlers
+    document.getElementById('btn-swap-boards').addEventListener('click', () => {
+      const container = document.getElementById('boards-container');
+      const boards = Array.from(container.children);
+      container.appendChild(boards[0]);
+    });
+
+    let allSelectedFlag = false;
+    document.getElementById('btn-select-all').addEventListener('click', function() {
+      allSelectedFlag = !allSelectedFlag;
+      ['blue', 'green'].forEach(col => {
+        appState[col].forEach(item => {
+          item.selected = allSelectedFlag;
+        });
+      });
+
+      document.querySelectorAll('.box-item-card').forEach(card => {
+        const item = findItemById(card.dataset.id);
+        if (item) {
+          updateCardVisual(card, item, card.dataset.col);
+        }
+      });
+
+      this.textContent = allSelectedFlag ? '전체 해제' : '전체 선택';
+      calculateTotals();
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      appState = {
+        blue: JSON.parse(JSON.stringify(INITIAL_DATA.blue)),
+        green: JSON.parse(JSON.stringify(INITIAL_DATA.green))
+      };
+      allSelectedFlag = false;
+      document.getElementById('btn-select-all').textContent = '전체 선택';
+      renderBoardHTML();
+      populateInitialCards();
+      initializeSortables();
+      calculateTotals();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderBoardHTML();
+      populateInitialCards();
+      initializeSortables();
+      calculateTotals();
+    });
+  </script>
+</body>
+</html>
