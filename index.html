@@ -96,7 +96,7 @@
     }
 
     .drop-slot-area {
-      min-height: 72px;
+      min-height: 70px;
       transition: background-color 0.2s, border-color 0.2s;
     }
 
@@ -113,7 +113,7 @@
     }
 
     /* ================================================================
-       [★ 태블릿 및 모바일 가로 모드 반반(50:50) & 크기 축소 최적화 CSS ★]
+       [★ 가로 모드 반반(50:50) 최적화 및 크기 축소 + 잘림 방지 CSS ★]
        ================================================================ */
     
     @media (min-width: 640px), (orientation: landscape) {
@@ -122,7 +122,7 @@
         flex-direction: row !important;
         align-items: stretch !important;
         justify-content: center !important;
-        gap: 10px !important;
+        gap: 8px !important;
       }
 
       .board-column {
@@ -133,70 +133,75 @@
       }
     }
 
-    /* 가로 모드(Landscape)일 때 화면이 너무 큰 것을 방지: 전체 크기 콤팩트화 */
+    /* 가로 모드(Landscape) 시 화면 전체 크기 축소 */
     @media (orientation: landscape) {
       body {
-        padding-bottom: 24px !important;
+        padding-bottom: 20px !important;
+      }
+      main {
+        max-width: 960px !important; /* 가로 전체 폭 슬림화 */
+        padding-left: 6px !important;
+        padding-right: 6px !important;
       }
       .board-title-text {
-        font-size: 19px !important;
+        font-size: 18px !important;
         letter-spacing: 2px !important;
       }
       .category-title-text {
         font-size: 13px !important;
       }
       .category-no-text {
-        font-size: 14px !important;
+        font-size: 13px !important;
       }
       .item-text {
-        font-size: 13px !important;
+        font-size: 12.5px !important;
       }
       .btn-badge-text-control {
         font-size: 11px !important;
-        padding: 1.5px 6px !important;
+        padding: 2px 6px !important;
       }
       .total-label-text {
         font-size: 17px !important;
       }
       .total-amount-number {
-        font-size: 21px !important;
+        font-size: 20px !important;
       }
       .total-unit-text {
-        font-size: 15px !important;
-      }
-      .notice-primary-text {
         font-size: 14px !important;
       }
+      .notice-primary-text {
+        font-size: 13px !important;
+      }
       .box-item-card {
-        padding: 5px 8px !important;
-        gap: 6px !important;
+        padding: 4px 6px !important;
+        gap: 4px !important;
       }
       .item-row-container {
-        min-height: 85px !important;
+        min-height: 82px !important;
       }
       .drop-slot-area {
-        min-height: 65px !important;
+        min-height: 60px !important;
       }
     }
 
-    /* 모바일 세로 높이가 낮은 가로 모드 (세로 500px 이하) 추가 압축 */
+    /* 모바일 세로 높이가 낮은 가로 모드 헤더 컴팩트화 */
     @media (orientation: landscape) and (max-height: 520px) {
       header {
         padding-top: 4px !important;
         padding-bottom: 4px !important;
       }
       .calc-icon-wrapper {
-        width: 30px !important;
-        height: 30px !important;
+        width: 28px !important;
+        height: 28px !important;
       }
       .header-main-title {
-        font-size: 15px !important;
+        font-size: 14px !important;
       }
       .header-sub-title {
         display: none !important;
       }
       .btn-header-control {
-        padding: 3px 7px !important;
+        padding: 2px 6px !important;
         font-size: 11px !important;
       }
     }
@@ -241,7 +246,7 @@
 
     /* 4. 보드 메인 타이틀 (실속형 / 고급형) */
     .board-title-text {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
       letter-spacing: 4px;
       color: #ffffff;
@@ -249,7 +254,7 @@
 
     /* 5. 서브헤더 'NO' 텍스트 */
     .sub-header-no-text {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
       color: #0f172a;
       letter-spacing: 0px;
@@ -257,7 +262,7 @@
 
     /* 6. 서브헤더 '품명' 텍스트 */
     .sub-header-name-text {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
       color: #0f172a;
       letter-spacing: 1px;
@@ -265,21 +270,21 @@
 
     /* 7. 공종 번호 텍스트 (01, 02, 03 ...) */
     .category-no-text {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: #334155;
     }
 
     /* 8. 공종 분류명 텍스트 (벽체공사, 바닥공사 ...) */
     .category-title-text {
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 600;
       color: #0f172a;
     }
 
     /* 9. 품목 박스 기본 텍스트 (광폭 합지, 실크 ...) */
     .item-text {
-      font-size: 14.5px;
+      font-size: 14px;
       font-weight: 500;
       color: #1e293b;
       line-height: 1.35;
@@ -301,14 +306,14 @@
        [★ 실속, 고급 버튼 텍스트 전용 컨트롤 CSS ★]
        ================================================================ */
     
-    /* 12-1. [공통] 실속/고급 버튼 텍스트 크기, 두께, 자간 및 패딩 통합 조절 */
+    /* 12-1. [공통] 실속/고급 버튼 텍스트 크기, 두께, 자간 및 패딩 통합 조절 (잘림 방지) */
     .btn-badge-text-control {
-      font-size: 12px !important;        /* 원하는 글자 크기 */
-      font-weight: 800 !important;       /* 원하는 글자 굵기 */
-      letter-spacing: -0.3px !important; /* 글자 간격 */
+      font-size: 12px !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.3px !important;
       line-height: 1.2 !important;
-      padding: 2.5px 7px !important;     /* 버튼 안쪽 여백 */
-      border-radius: 9999px !important;  /* 버튼 모서리 둥글기 */
+      padding: 2px 6.5px !important;
+      border-radius: 9999px !important;
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
@@ -319,21 +324,21 @@
 
     /* 12-2. '실속' 버튼 색상 조절 */
     .badge-blue-text {
-      background-color: #dbeafe !important; /* 배경색 */
-      color: #0267c1 !important;            /* 글자색 */
-      border: 1px solid #93c5fd !important; /* 테두리색 */
+      background-color: #dbeafe !important;
+      color: #0267c1 !important;
+      border: 1px solid #93c5fd !important;
     }
 
     /* 13. '고급' 버튼 색상 조절 */
     .badge-green-text {
-      background-color: #dcfce7 !important; /* 배경색 */
-      color: #13773b !important;            /* 글자색 */
-      border: 1px solid #86efac !important; /* 테두리색 */
+      background-color: #dcfce7 !important;
+      color: #13773b !important;
+      border: 1px solid #86efac !important;
     }
 
     /* 14. 하단 합계 라벨 텍스트 ('합계') */
     .total-label-text {
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 700;
       letter-spacing: 2px;
       color: #ffffff;
@@ -341,7 +346,7 @@
 
     /* 15. 합계 금액 숫자 텍스트 */
     .total-amount-number {
-      font-size: 25px;
+      font-size: 24px;
       font-weight: 600;
       letter-spacing: -0.5px;
       color: #ffffff;
@@ -349,14 +354,14 @@
 
     /* 16. 합계 금액 단위 텍스트 ('원') */
     .total-unit-text {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
       color: #ffffff;
     }
 
     /* 17. 하단 라운드 박스 안내 문구 1행 (철거 및 폐기물 별도) */
     .notice-primary-text {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
       color: #1e293b;
       line-height: 1.4;
@@ -436,7 +441,7 @@
         
         <!-- 실속형 서브헤더 -->
         <div class="flex items-stretch bg-[#e9f2fa] border-b border-[#b9d2eb] select-none">
-          <div class="w-11 sm:w-14 flex items-center justify-center border-r border-[#b9d2eb] py-2 shrink-0">
+          <div class="w-10 sm:w-14 flex items-center justify-center border-r border-[#b9d2eb] py-2 shrink-0">
             <span class="sub-header-no-text">NO</span>
           </div>
           <div class="flex-1 flex items-center justify-center py-2">
@@ -473,7 +478,7 @@
         
         <!-- 고급형 서브헤더 -->
         <div class="flex items-stretch bg-[#edf6f0] border-b border-[#badbc5] select-none">
-          <div class="w-11 sm:w-14 flex items-center justify-center border-r border-[#badbc5] py-2 shrink-0">
+          <div class="w-10 sm:w-14 flex items-center justify-center border-r border-[#badbc5] py-2 shrink-0">
             <span class="sub-header-no-text">NO</span>
           </div>
           <div class="flex-1 flex items-center justify-center py-2">
@@ -598,12 +603,12 @@
           const slotBgClass = isBlue ? 'drop-slot-blue bg-slate-50/70 border-slate-200' : 'drop-slot-green bg-[#f4faf6] border-[#badbc5]';
 
           const groupEl = document.createElement('div');
-          groupEl.className = 'item-row-container flex min-h-[96px]';
+          groupEl.className = 'item-row-container flex min-h-[90px]';
           groupEl.innerHTML = `
-            <div class="w-11 sm:w-14 ${noBg} flex items-center justify-center category-no-text border-r ${borderColor} select-none shrink-0">
+            <div class="w-10 sm:w-14 ${noBg} flex items-center justify-center category-no-text border-r ${borderColor} select-none shrink-0">
               ${cat.no}
             </div>
-            <div class="flex-1 p-1.5 sm:p-2 flex flex-col justify-between min-w-0">
+            <div class="flex-1 p-1 sm:p-2 flex flex-col justify-between min-w-0">
               <div class="flex items-center justify-between mb-1 select-none">
                 <span class="category-title-text font-bold">${cat.title}</span>
               </div>
@@ -637,7 +642,7 @@
       }
 
       const card = document.createElement('div');
-      card.className = `draggable-card box-item-card relative flex items-center justify-between gap-1.5 rounded-xl border px-2 py-1.5 sm:py-2 transition-all duration-150 ${item.selected ? activeStyle : defaultStyle}`;
+      card.className = `draggable-card box-item-card relative flex items-center justify-between gap-1 rounded-xl border px-1.5 sm:px-2 py-1.5 transition-all duration-150 ${item.selected ? activeStyle : defaultStyle}`;
       card.dataset.id = item.id;
       card.dataset.origin = item.origin;
       card.dataset.price = item.price;
@@ -649,12 +654,12 @@
           ${item.selected ? '<svg class="w-2.5 h-2.5 sm:w-3 sm:h-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
         </button>
 
-        <!-- Product Name (안잘리게 truncate 및 flex-1 처리) -->
-        <div class="flex-1 min-w-0 pr-1 pointer-events-none">
+        <!-- Product Name (우측 뱃지 확보를 위해 min-w-0 처리) -->
+        <div class="flex-1 min-w-0 px-1 pointer-events-none">
           <span class="${textClass}">${escapeHtml(item.name)}</span>
         </div>
 
-        <!-- Right Badge: Maintains product origin ('실속' or '고급') 절대 안짤리게 shrink-0 고정 -->
+        <!-- Right Badge: 절대 안잘리도록 flex-shrink-0 및 안전 여백 확보 -->
         <div class="badge-container shrink-0 pointer-events-none flex items-center">
           <span class="tag-badge btn-badge-text-control shadow-2xs ${badgeClass}">
             ${badgeText}
@@ -752,7 +757,7 @@
         ? 'bg-white border-slate-300 hover:border-slate-400 hover:shadow-xs'
         : 'bg-white border-[#badbc5] hover:border-green-400 hover:shadow-xs';
 
-      card.className = `draggable-card box-item-card relative flex items-center justify-between gap-1.5 rounded-xl border px-2 py-1.5 sm:py-2 transition-all duration-150 ${item.selected ? activeStyle : defaultStyle}`;
+      card.className = `draggable-card box-item-card relative flex items-center justify-between gap-1 rounded-xl border px-1.5 sm:px-2 py-1.5 transition-all duration-150 ${item.selected ? activeStyle : defaultStyle}`;
 
       const checkBtn = card.querySelector('.btn-check-toggle');
       if (item.selected) {
@@ -828,7 +833,6 @@
         appState[col].forEach(item => {
           const slot = document.querySelector(`.drop-slot-area[data-col="${col}"][data-cat="${item.cat}"]`);
           if (slot) {
-
             slot.appendChild(createBoxCard(item, col));
           }
         });
