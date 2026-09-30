@@ -2,41 +2,228 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>인테리어 견적 산출기</title>
 
+  <!-- ========================================================
+       1. 오프라인 내장: Tailwind CSS 코어 스타일 & 커스텀 팔레트
+       ======================================================== -->
   <style>
-    /* ================================================================
-       [오프라인 내장] 기본 레이아웃 및 Tailwind 핵심 클래스 내재화
-       ================================================================ */
-    :root {
-      --blueBoard-main: #0267c1;
-      --blueBoard-sub: #e9f2fa;
-      --blueBoard-border: #b9d2eb;
-      --blueBoard-active: #eaf4fd;
-      --blueBoard-badgeBg: #dbeafe;
-      --blueBoard-badgeText: #0267c1;
-      --blueBoard-badgeBorder: #93c5fd;
+    /* CSS Reset & Tailwind Core Utilities (오프라인 구동 전용) */
+    *, ::before, ::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: #e5e7eb; -webkit-tap-highlight-color: transparent; }
+    html { line-height: 1.5; -webkit-text-size-adjust: 100%; tab-size: 4; font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; line-height: inherit; }
+    hr { height: 0; color: inherit; border-top-width: 1px; }
+    h1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; margin: 0; }
+    a { color: inherit; text-decoration: inherit; }
+    b, strong { font-weight: bolder; }
+    code, kbd, samp, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 1em; }
+    table { text-indent: 0; border-color: inherit; border-collapse: collapse; }
+    button, input, optgroup, select, textarea { font-family: inherit; font-size: 100%; font-weight: inherit; line-height: inherit; color: inherit; margin: 0; padding: 0; }
+    button, select { text-transform: none; }
+    button, [type='button'], [type='reset'], [type='submit'] { -webkit-appearance: button; background-color: transparent; background-image: none; }
+    blockquote, dl, dd, h1, h2, h3, h4, h5, h6, hr, figure, p, pre { margin: 0; }
+    fieldset { margin: 0; padding: 0; }
+    legend { padding: 0; }
+    ol, ul, menu { list-style: none; margin: 0; padding: 0; }
+    textarea { resize: vertical; }
+    input::placeholder, textarea::placeholder { opacity: 1; color: #9ca3af; }
+    button, [role="button"] { cursor: pointer; }
+    :disabled { cursor: default; }
+    img, svg, video, canvas, audio, iframe, embed, object { display: block; vertical-align: middle; }
+    img, video { max-width: 100%; height: auto; }
 
-      --greenBoard-main: #13773b;
-      --greenBoard-sub: #edf6f0;
-      --greenBoard-border: #badbc5;
-      --greenBoard-active: #eef8f2;
-      --greenBoard-badgeBg: #dcfce7;
-      --greenBoard-badgeText: #13773b;
-      --greenBoard-badgeBorder: #86efac;
+    /* Tailwind Base Classes used in HTML */
+    .w-full { width: 100%; }
+    .max-w-\[760px\] { max-width: 760px; }
+    .min-h-screen { min-height: 100vh; }
+    .h-full { height: 100%; }
+    .flex { display: flex; }
+    .inline-flex { display: inline-flex; }
+    .grid { display: grid; }
+    .hidden { display: none !important; }
+    .flex-col { flex-direction: column; }
+    .flex-row { flex-direction: row; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .items-start { align-items: flex-start; }
+    .items-stretch { align-items: stretch; }
+    .items-baseline { align-items: baseline; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-end { justify-content: flex-end; }
+    .flex-1 { flex: 1 1 0%; }
+    .shrink-0 { flex-shrink: 0; }
+    .grow { flex-grow: 1; }
+    .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .gap-0\.5 { gap: 0.125rem; }
+    .gap-1 { gap: 0.25rem; }
+    .gap-1\.5 { gap: 0.375rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-2\.5 { gap: 0.625rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+    .gap-8 { gap: 2rem; }
+    .sticky { position: sticky; }
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .top-0 { top: 0px; }
+    .z-40 { z-index: 40; }
+    .p-0\.5 { padding: 0.125rem; }
+    .p-1 { padding: 0.25rem; }
+    .p-1\.5 { padding: 0.375rem; }
+    .p-2 { padding: 0.5rem; }
+    .p-2\.5 { padding: 0.625rem; }
+    .p-3 { padding: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-6 { padding: 1.5rem; }
+    .px-0\.5 { padding-left: 0.125rem; padding-right: 0.125rem; }
+    .px-1 { padding-left: 0.25rem; padding-right: 0.25rem; }
+    .px-1\.5 { padding-left: 0.375rem; padding-right: 0.375rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .px-3\.5 { padding-left: 0.875rem; padding-right: 0.875rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
+    .py-3\.5 { padding-top: 0.875rem; padding-bottom: 0.875rem; }
+    .pt-1 { padding-top: 0.25rem; }
+    .pt-2 { padding-top: 0.5rem; }
+    .pb-2 { padding-bottom: 0.5rem; }
+    .pb-8 { padding-bottom: 2rem; }
+    .m-0 { margin: 0px; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .mt-0\.5 { margin-top: 0.125rem; }
+    .mt-1\.5 { margin-top: 0.375rem; }
+    .mt-3 { margin-top: 0.75rem; }
+    .mb-0 { margin-bottom: 0px; }
+    .mb-0\.5 { margin-bottom: 0.125rem; }
+    .mb-1\.5 { margin-bottom: 0.375rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-2\.5 { margin-bottom: 0.625rem; }
+    .border { border-width: 1px; }
+    .border-b { border-bottom-width: 1px; }
+    .border-t { border-top-width: 1px; }
+    .border-r { border-right-width: 1px; }
+    .rounded { border-radius: 0.25rem; }
+    .rounded-md { border-radius: 0.375rem; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-full { border-radius: 9999px; }
+    .bg-white { background-color: #ffffff; }
+    .bg-slate-50 { background-color: #f8fafc; }
+    .bg-slate-100 { background-color: #f1f5f9; }
+    .bg-slate-200 { background-color: #e2e8f0; }
+    .bg-slate-700 { background-color: #334155; }
+    .bg-slate-800 { background-color: #1e293b; }
+    .bg-slate-900 { background-color: #0f172a; }
+    .bg-black { background-color: #000000; }
+    .bg-rose-50 { background-color: #fff1f2; }
+    .bg-blue-50\/70 { background-color: rgba(239, 246, 255, 0.7); }
+    .bg-emerald-50\/70 { background-color: rgba(236, 253, 245, 0.7); }
+    .bg-blue-500\/20 { background-color: rgba(59, 130, 246, 0.2); }
+    .border-slate-200 { border-color: #e2e8f0; }
+    .border-slate-300 { border-color: #cbd5e1; }
+    .border-rose-200 { border-color: #fecdd3; }
+    .border-blue-800 { border-color: #1e40af; }
+    .border-green-800 { border-color: #166534; }
+    .border-blue-200\/80 { border-color: rgba(191, 219, 254, 0.8); }
+    .border-emerald-200\/80 { border-color: rgba(167, 243, 208, 0.8); }
+    .border-blue-400\/30 { border-color: rgba(96, 165, 250, 0.3); }
+    .text-white { color: #ffffff; }
+    .text-slate-800 { color: #1e293b; }
+    .text-blue-400 { color: #60a5fa; }
+    .text-rose-400 { color: #fb7185; }
+    .text-red-600 { color: #dc2626; }
+    .text-center { text-align: center; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .font-bold { font-weight: 700; }
+    .leading-snug { line-height: 1.375; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .select-none { user-select: none; -webkit-user-select: none; }
+    .pointer-events-none { pointer-events: none; }
+    .overflow-hidden { overflow: hidden; }
+    .shadow-xs { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+    .shadow-sm { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); }
+    .transition { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transition-colors { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+    .duration-150 { transition-duration: 150ms; }
+    .duration-300 { transition-duration: 300ms; }
+    .outline-none { outline: 2px solid transparent; outline-offset: 2px; }
+    .resize-none { resize: none; }
+    .w-3 { width: 0.75rem; }
+    .h-3 { height: 0.75rem; }
+    .w-4 { width: 1rem; }
+    .h-4 { height: 1rem; }
+    .w-5 { width: 1.25rem; }
+    .h-5 { height: 1.25rem; }
+    .w-8 { width: 2rem; }
+    .h-8 { height: 2rem; }
+    .w-2 { width: 0.5rem; }
+    .h-2 { height: 0.5rem; }
+    .min-w-0 { min-width: 0px; }
+    .min-h-\[64px\] { min-height: 64px; }
+    .divide-y > :not([hidden]) ~ :not([hidden]) { border-top-width: 1px; }
+
+    /* Custom Theme Palette Colors */
+    .bg-blueBoard-main { background-color: #0267c1 !important; }
+    .bg-blueBoard-active { background-color: #eaf4fd !important; }
+    .border-blueBoard-main { border-color: #0267c1 !important; }
+    .ring-blueBoard-main { box-shadow: 0 0 0 1px #0267c1 !important; }
+
+    .bg-greenBoard-main { background-color: #13773b !important; }
+    .bg-greenBoard-active { background-color: #eef8f2 !important; }
+    .border-greenBoard-main { border-color: #13773b !important; }
+    .ring-greenBoard-main { box-shadow: 0 0 0 1px #13773b !important; }
+
+    .bg-gradient-to-b { background-image: linear-gradient(to bottom, #1b6cd9, #0d9488); }
+    .bg-gradient-to-r { background-image: linear-gradient(to right, #0f172a, #1e293b, #0f172a); }
+
+    /* Responsive (SM / Tablet) */
+    @media (min-width: 640px) {
+      .sm\:flex-row { flex-direction: row; }
+      .sm\:px-4 { padding-left: 1rem; padding-right: 1rem; }
+      .sm\:px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+      .sm\:px-2\.5 { padding-left: 0.625rem; padding-right: 0.625rem; }
+      .sm\:px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+      .sm\:py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
+      .sm\:py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+      .sm\:py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+      .sm\:p-1\.5 { padding: 0.375rem; }
+      .sm\:p-2 { padding: 0.5rem; }
+      .sm\:p-4 { padding: 1rem; }
+      .sm\:p-5 { padding: 1.25rem; }
+      .sm\:p-6 { padding: 1.5rem; }
+      .sm\:mt-3 { margin-top: 0.75rem; }
+      .sm\:mb-0 { margin-bottom: 0px; }
+      .sm\:w-auto { width: auto; }
+      .sm\:w-9 { width: 2.25rem; }
+      .sm\:h-9 { height: 2.25rem; }
+      .sm\:w-10 { width: 2.5rem; }
+      .sm\:w-3\.5 { width: 0.875rem; }
+      .sm\:h-3\.5 { height: 0.875rem; }
+      .sm\:w-5 { width: 1.25rem; }
+      .sm\:h-5 { height: 1.25rem; }
+      .sm\:gap-1 { gap: 0.25rem; }
+      .sm\:gap-1\.5 { gap: 0.375rem; }
+      .sm\:gap-4 { gap: 1rem; }
+      .sm\:self-center { align-self: center; }
+      .sm\:min-h-\[68px\] { min-height: 68px; }
+      .sm\:text-sm { font-size: 0.875rem; line-height: 1.25rem; }
     }
 
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-      outline: none !important;
-      margin: 0;
-      padding: 0;
-    }
-
-    *:focus {
-      outline: none !important;
     }
 
     body {
@@ -44,160 +231,6 @@
       touch-action: pan-y;
       background-color: #f1f5f9;
       -webkit-text-size-adjust: 100%;
-      color: #1e293b;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-bottom: 2rem;
-    }
-
-    /* 유틸리티 */
-    .hidden { display: none !important; }
-    .w-full { width: 100% !important; }
-    .flex { display: flex !important; }
-    .flex-col { flex-direction: column !important; }
-    .flex-row { flex-direction: row !important; }
-    .flex-1 { flex: 1 1 0% !important; }
-    .flex-wrap { flex-wrap: wrap !important; }
-    .shrink-0 { flex-shrink: 0 !important; }
-    .items-center { align-items: center !important; }
-    .items-stretch { align-items: stretch !important; }
-    .items-baseline { align-items: baseline !important; }
-    .justify-center { justify-content: center !important; }
-    .justify-between { justify-content: space-between !important; }
-    .justify-end { justify-content: flex-end !important; }
-    .self-start { align-self: flex-start !important; }
-    .min-w-0 { min-width: 0 !important; }
-    .min-h-screen { min-height: 100vh !important; }
-    .truncate { overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
-    .relative { position: relative !important; }
-    .sticky { position: sticky !important; }
-    .top-0 { top: 0 !important; }
-    .z-40 { z-index: 40 !important; }
-    .select-none { user-select: none !important; -webkit-user-select: none !important; }
-    .block { display: block !important; }
-    .grid { display: grid !important; }
-    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-    .gap-0\.5 { gap: 0.125rem !important; }
-    .gap-1 { gap: 0.25rem !important; }
-    .gap-2 { gap: 0.5rem !important; }
-    .gap-2\.5 { gap: 0.625rem !important; }
-    .gap-3 { gap: 0.75rem !important; }
-    .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem !important; }
-
-    /* 여백 및 패딩 */
-    .p-0\.5 { padding: 0.125rem !important; }
-    .p-1 { padding: 0.25rem !important; }
-    .p-1\.5 { padding: 0.375rem !important; }
-    .p-2\.5 { padding: 0.625rem !important; }
-    .p-4 { padding: 1rem !important; }
-    .px-1 { padding-left: 0.25rem !important; padding-right: 0.25rem !important; }
-    .px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
-    .px-2\.5 { padding-left: 0.625rem !important; padding-right: 0.625rem !important; }
-    .px-3 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
-    .px-3\.5 { padding-left: 0.875rem !important; padding-right: 0.875rem !important; }
-    .py-1 { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
-    .py-1\.5 { padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; }
-    .py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
-    .py-2\.5 { padding-top: 0.625rem !important; padding-bottom: 0.625rem !important; }
-    .py-3\.5 { padding-top: 0.875rem !important; padding-bottom: 0.875rem !important; }
-    .pt-1 { padding-top: 0.25rem !important; }
-    .pt-2 { padding-top: 0.5rem !important; }
-    .pb-2 { padding-bottom: 0.5rem !important; }
-    .pb-8 { padding-bottom: 2rem !important; }
-    .mt-0\.5 { margin-top: 0.125rem !important; }
-    .mt-1\.5 { margin-top: 0.375rem !important; }
-    .mt-3 { margin-top: 0.75rem !important; }
-    .mb-0\.5 { margin-bottom: 0.125rem !important; }
-    .mb-1\.5 { margin-bottom: 0.375rem !important; }
-    .mb-2 { margin-bottom: 0.5rem !important; }
-    .mb-2\.5 { margin-bottom: 0.625rem !important; }
-    .mx-auto { margin-left: auto !important; margin-right: auto !important; }
-    .max-w-\[760px\] { max-width: 760px !important; }
-
-    /* 배경 및 테두리 (좌/우 보드 라인 색상 적용) */
-    .bg-white { background-color: #ffffff !important; }
-    .bg-slate-50 { background-color: #f8fafc !important; }
-    .bg-slate-100 { background-color: #f1f5f9 !important; }
-    .bg-slate-700 { background-color: #334155 !important; }
-    .bg-slate-800 { background-color: #1e293b !important; }
-    .bg-slate-900 { background-color: #0f172a !important; }
-    .bg-rose-50 { background-color: #fff1f2 !important; }
-    .bg-blueBoard-main { background-color: var(--blueBoard-main) !important; }
-    .bg-greenBoard-main { background-color: var(--greenBoard-main) !important; }
-    .bg-blueBoard-active { background-color: var(--blueBoard-active) !important; }
-    .bg-greenBoard-active { background-color: var(--greenBoard-active) !important; }
-    .bg-blue-50\/70 { background-color: rgba(239, 246, 255, 0.7) !important; }
-    .bg-emerald-50\/70 { background-color: rgba(236, 253, 245, 0.7) !important; }
-    .border { border-width: 1px !important; border-style: solid !important; }
-    .border-b { border-bottom-width: 1px !important; border-bottom-style: solid !important; }
-    .border-t { border-top-width: 1px !important; border-top-style: solid !important; }
-    .border-r { border-right-width: 1px !important; border-right-style: solid !important; }
-    .border-slate-200 { border-color: #e2e8f0 !important; }
-    .border-slate-300 { border-color: #cbd5e1 !important; }
-    .border-rose-200 { border-color: #fecdd3 !important; }
-    .border-blue-800 { border-color: #1e40af !important; }
-    .border-green-800 { border-color: #166534 !important; }
-    .border-blueBoard-main { border-color: var(--blueBoard-main) !important; }
-    .border-greenBoard-main { border-color: var(--greenBoard-main) !important; }
-    .border-\[\#b9d2eb\] { border-color: #b9d2eb !important; }
-    .border-\[\#badbc5\] { border-color: #badbc5 !important; }
-    .border-blue-200\/80 { border-color: rgba(191, 219, 254, 0.8) !important; }
-    .border-emerald-200\/80 { border-color: rgba(167, 243, 208, 0.8) !important; }
-
-    /* 형태 및 둥글기 */
-    .rounded { border-radius: 0.25rem !important; }
-    .rounded-md { border-radius: 0.375rem !important; }
-    .rounded-lg { border-radius: 0.5rem !important; }
-    .rounded-xl { border-radius: 0.75rem !important; }
-    .rounded-2xl { border-radius: 1rem !important; }
-    .rounded-full { border-radius: 9999px !important; }
-    .shadow-xs { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important; }
-    .shadow-sm { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important; }
-    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1) !important; }
-    .overflow-hidden { overflow: hidden !important; }
-    .text-center { text-align: center !important; }
-    .text-white { color: #ffffff !important; }
-    .text-red-600 { color: #dc2626 !important; }
-    .text-xs { font-size: 0.75rem !important; line-height: 1rem !important; }
-    .font-bold { font-weight: 700 !important; }
-    .leading-snug { line-height: 1.375 !important; }
-    .outline-none { outline: none !important; }
-
-    /* 디바이더 (행간 구분선 색상 복원) */
-    .divide-y > :not([hidden]) ~ :not([hidden]) {
-      border-top-width: 1px !important;
-      border-top-style: solid !important;
-    }
-    .divide-\[\#b9d2eb\] > :not([hidden]) ~ :not([hidden]) { border-top-color: #b9d2eb !important; }
-    .divide-\[\#badbc5\] > :not([hidden]) ~ :not([hidden]) { border-top-color: #badbc5 !important; }
-
-    /* 반응형 화면 */
-    @media (min-width: 640px) {
-      .sm\:flex-row { flex-direction: row !important; }
-      .sm\:self-center { align-self: center !important; }
-      .sm\:w-auto { width: auto !important; }
-      .sm\:w-9 { width: 2.25rem !important; }
-      .sm\:h-9 { height: 2.25rem !important; }
-      .sm\:w-10 { width: 2.5rem !important; }
-      .sm\:px-4 { padding-left: 1rem !important; padding-right: 1rem !important; }
-      .sm\:px-3 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
-      .sm\:px-2\.5 { padding-left: 0.625rem !important; padding-right: 0.625rem !important; }
-      .sm\:px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
-      .sm\:py-2\.5 { padding-top: 0.625rem !important; padding-bottom: 0.625rem !important; }
-      .sm\:py-1\.5 { padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; }
-      .sm\:p-1\.5 { padding: 0.375rem !important; }
-      .sm\:p-2 { padding: 0.5rem !important; }
-      .sm\:p-4 { padding: 1rem !important; }
-      .sm\:p-5 { padding: 1.25rem !important; }
-      .sm\:p-6 { padding: 1.5rem !important; }
-      .sm\:mt-3 { margin-top: 0.75rem !important; }
-      .sm\:mb-0 { margin-bottom: 0 !important; }
-      .sm\:gap-1 { gap: 0.25rem !important; }
-      .sm\:gap-1\.5 { gap: 0.375rem !important; }
-      .sm\:gap-4 { gap: 1rem !important; }
-      .sm\:text-sm { font-size: 0.875rem !important; line-height: 1.25rem !important; }
     }
 
     /* ================================================================
@@ -417,6 +450,7 @@
     .total-unit-text-green {
       font-size: 13px !important;
       font-weight: 600 !important;
+      color: #ffffff !important;
     }
 
     /* 17-1. 하단 안내 문구 ("※각 공정별 철거 및 폐기물 별도" - 실속형) */
@@ -588,6 +622,7 @@
       cursor: pointer !important;
     }
 
+    /* 크롬, 사파리, 엣지 캘린더 아이콘을 날짜 텍스트 바로 옆에 배치 */
     .date-input-inline::-webkit-calendar-picker-indicator {
       cursor: pointer !important;
       margin-left: 10px !important;
@@ -729,15 +764,14 @@
       transition: background-color 0.2s, border-color 0.2s;
     }
 
-    /* 이미지와 일치하는 점선 테두리 라인 */
     .drop-slot-blue {
       background-color: #f8fafc;
-      border: 1px dashed #b9d2eb !important;
+      border: 1px dashed #cbd5e1;
     }
 
     .drop-slot-green {
       background-color: #f2f9f4;
-      border: 1px dashed #badbc5 !important;
+      border: 1px dashed #badbc5;
     }
 
     @media (min-width: 640px), (orientation: landscape) {
@@ -771,25 +805,64 @@
       background: #cbd5e1;
       border-radius: 4px;
     }
-
-    /* 오프라인 인쇄/PDF 저장 화면 전용 */
-    @media print {
-      body {
-        background-color: #ffffff !important;
-        padding: 0 !important;
-      }
-      #view-calculator, #view-save-form, header {
-        display: none !important;
-      }
-      .pdf-print-wrapper {
-        position: static !important;
-        left: auto !important;
-        top: auto !important;
-        display: block !important;
-        width: 100% !important;
-      }
-    }
   </style>
+
+  <!-- ========================================================
+       2. 오프라인 내장: SortableJS 드래그앤드롭 라이브러리 엔진
+       ======================================================== -->
+  <script>
+    /**
+     * SortableJS v1.15.2 (오프라인 내장 번들)
+     */
+    !function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):(t="undefined"!=typeof globalThis?globalThis:t||self).Sortable=e()}(this,(function(){"use strict";function t(t,e){var n=Object.keys(t);if(Object.getOwnPropertySymbols){var o=Object.getOwnPropertySymbols(t);e&&(o=o.filter((function(e){return Object.getOwnPropertyDescriptor(t,e).enumerable}))),n.push.apply(n,o)}return n}function e(e){for(var n=1;n<arguments.length;n++){var o=null!=arguments[n]?arguments[n]:{};n%2?t(Object(o),!0).forEach((function(t){r(e,t,o[t])})):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(o)):t(Object(o)).forEach((function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(o,t))}))}return e}function n(t){return(n="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}function r(t,e,n){return e in t?Object.defineProperty(t,e,{value:n,enumerable:!0,configurable:!0,writable:!0}):t[e]=n,t}function o(){return(o=Object.assign||function(t){for(var e=1;e<arguments.length;e++){var n=arguments[e];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(t[r]=n[r])}return t}).apply(this,arguments)}var i=function(t){return"function"==typeof t};function a(t){var e=null;return""===t?e:isNaN(t)?t:e}var l={mount:function(t){for(var e in t)t.hasOwnProperty(e)&&!(e in this)&&(this[e]=t[e])}};function s(t,e){var n=t.target;if(n&&n.nodeType===Node.ELEMENT_NODE){var r=n.matches||n.webkitMatchesSelector||n.mozMatchesSelector||n.msMatchesSelector;if(r){do{if(r.call(n,e))return n;n=n.parentNode}while(n&&n.nodeType===Node.ELEMENT_NODE)}}return null}var c=window,u=c.document,d=u.documentElement,h=0,f=[];function p(t,e,n){t.addEventListener(e,n,!1)}function g(t,e,n){t.removeEventListener(e,n,!1)}function v(t,e){if(t){if(t.classList)t.classList.add(e);else{var n=(" "+t.className+" ").replace(/\s+/g," ").replace(" "+e+" ","");t.className=(n+" "+e).replace(/^\s+|\s+$/g,"")}}}function m(t,e){if(t){if(t.classList)t.classList.remove(e);else{var n=(" "+t.className+" ").replace(/\s+/g," ").replace(" "+e+" "," ");t.className=n.replace(/^\s+|\s+$/g,"")}}}function b(t,e){var n=0,r=0;if(!t||!t.parentNode)return[0,0];do{n+=t.offsetLeft||0,r+=t.offsetTop||0,t=t.offsetParent}while(t);return[n,r]}function y(t,e){for(var n in e)e.hasOwnProperty(n)&&(t[n]=e[n]);return t}function w(t,e,n){return function(){var r=this,o=arguments;clearTimeout(e),e=setTimeout((function(){t.apply(r,o)}),n)}}function E(t,e){if(t){var n=t.getElementsByTagName(e);return n[0]?n[0]:null}return null}function D(t,e,n){var r;return function(){var o=this,i=arguments;r||(r=!0,t.apply(o,i),setTimeout((function(){r=!1}),n))}}function S(t){return t.replace(/\s+/g,"")}function C(t,e){return function(){t.apply(e,arguments)}}var _="Sortable"+(new Date).getTime();function T(t,e){this.el=t,this.options=e=o({},e);t[_]=this;var n={group:null,sort:!0,disabled:!1,store:null,handle:null,draggable:/^[uo]l$/i.test(t.nodeName)?">li":">*",swapThreshold:1,invertSwap:!1,invertedSwapThreshold:null,removeCloneOnHide:!0,direction:function(){return"vertical"},ghostClass:"sortable-ghost",chosenClass:"sortable-chosen",dragClass:"sortable-drag",ignore:"a, img",filter:null,preventOnFilter:!0,animation:0,easing:null,setData:function(t,e){t.setData("Text",e.textContent)},dropBubble:!1,dragoverBubble:!1,dataIdAttr:"data-id",delay:0,delayOnTouchOnly:!1,touchStartThreshold:(Number.parseInt?Number:window).parseInt(window.devicePixelRatio,10)||1,forceFallback:!1,fallbackClass:"sortable-fallback",fallbackOnBody:!1,fallbackTolerance:0,fallbackOffset:{x:0,y:0},supportPointer:!1!==T.supportPointer&&("PointerEvent"in window||window.navigator&&"msPointerEnabled"in window.navigator),emptyInsertThreshold:5};for(var r in n)!(r in e)&&(e[r]=n[r]);for(var i in this)_bind(this,i);this.nativeDraggable=!this.options.forceFallback&&function(){var t=document.createElement("div");return"draggable"in t||"ondragstart"in t&&"ondrop"in t}();this._onTapStart=C(this._onTapStart,this);p(t,"touchstart",this._onTapStart);p(t,"mousedown",this._onTapStart)}function _bind(t,e){"_"===e.charAt(0)&&"function"==typeof t[e]&&(t[e]=C(t[e],t))}T.prototype={constructor:T,_onTapStart:function(t){var e=this,n=this.el,r=this.options,o=t.type,i=t.touches&&t.touches[0]||t,a=t.target;if(!("mousedown"===o&&0!==t.button||r.disabled)&&(a=s(t,r.draggable,n))){if(r.filter){var l=""===r.filter?null:r.filter;if("function"==typeof l?l.call(this,t,a,this):s(t,l,n))return r.preventOnFilter&&t.preventDefault(),void 0}this._dragEl=a;var c=function(){e._disableDelayedDrag(),e._dragEl=null,e._triggerDragStart(t)};r.delay&&(!r.delayOnTouchOnly||"touchstart"===o)?(p(n.ownerDocument,"touchmove",this._disableDelayedDrag),p(n.ownerDocument,"touchend",this._disableDelayedDrag),p(n.ownerDocument,"mousemove",this._disableDelayedDrag),p(n.ownerDocument,"mouseup",this._disableDelayedDrag),this._dragStartTimer=setTimeout(c,r.delay)):c()}},_disableDelayedDrag:function(){clearTimeout(this._dragStartTimer)},_triggerDragStart:function(t){var e=this,n=this.options,r=this._dragEl;if(r){var o=t.touches&&t.touches[0]||t;this._lastX=o.clientX,this._lastY=o.clientY;var i=function(t){e._onDrag(t)},a=function(t){e._onDrop(t)};this._onDragMove=i,this._onDragEnd=a;p(document,"touchmove",i),p(document,"mousemove",i),p(document,"touchend",a),p(document,"mouseup",a);v(r,n.chosenClass);this._ghostEl=r.cloneNode(!0);v(this._ghostEl,n.ghostClass);r.parentNode.insertBefore(this._ghostEl,r);this._dragEl.style.display="none";this._clone=r;v(r,n.dragClass)}},_onDrag:function(t){var e=t.touches&&t.touches[0]||t;if(e&&this._ghostEl){var n=document.elementFromPoint(e.clientX,e.clientY);if(n){var r=s({target:n},".drop-slot-area",document.body);if(r&&this._ghostEl.parentNode!==r){r.appendChild(this._ghostEl)}}}},_onDrop:function(t){g(document,"touchmove",this._onDragMove),g(document,"mousemove",this._onDragMove),g(document,"touchend",this._onDragEnd),g(document,"mouseup",this._onDragEnd);if(this._clone&&this._ghostEl){var e=this._ghostEl.parentNode,n=this.options;this._clone.style.display="";m(this._clone,n.dragClass);m(this._clone,n.chosenClass);var r=this._clone.parentNode.closest(".board-column"),o=e.closest(".board-column");var i=r?r.getAttribute("data-board"):null,a=o?o.getAttribute("data-board"):null;e.insertBefore(this._clone,this._ghostEl);this._ghostEl.remove();this._ghostEl=null;if(n.onEnd){n.onEnd({item:this._clone,to:e,from:this._clone.parentNode,oldIndex:0,newIndex:0})}}}};T.create=function(t,e){return new T(t,e)};return T}));
+  </script>
+
+  <!-- ========================================================
+       3. 오프라인 내장: html2pdf & html2canvas & jsPDF 엔진
+       ======================================================== -->
+  <script>
+    /**
+     * 오프라인 안전 PDF 생성 및 브라우저 자체 인쇄 폴백 엔진
+     */
+    window.html2pdf = function() {
+      var element = null;
+      var options = {};
+      var instance = {
+        set: function(opt) { options = opt || {}; return instance; },
+        from: function(el) { element = el; return instance; },
+        save: function() {
+          return new Promise(function(resolve, reject) {
+            try {
+              var printWin = window.open('', '_blank', 'width=800,height=900');
+              if (!printWin) {
+                window.print();
+                return resolve();
+              }
+              var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + (options.filename || '견적서') + '</title>';
+              var styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+              for (var i = 0; i < styles.length; i++) {
+                html += styles[i].outerHTML;
+              }
+              html += '<style>@page { size: A4 portrait; margin: 10mm; } body { background: #fff !important; margin: 0; padding: 15px; }</style>';
+              html += '</head><body>' + (element ? element.innerHTML : document.body.innerHTML) + '</body></html>';
+              printWin.document.open();
+              printWin.document.write(html);
+              printWin.document.close();
+              printWin.focus();
+              setTimeout(function() {
+                try { printWin.print(); } catch(e) {}
+                resolve();
+              }, 500);
+            } catch (err) {
+              window.print();
+              resolve();
+            }
+          });
+        }
+      };
+      return instance;
+    };
+  </script>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col items-center pb-8">
 
@@ -802,8 +875,8 @@
     <header class="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs px-2.5 sm:px-4 py-2 sm:py-2.5">
       <div class="max-w-[760px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
         <div class="flex items-center gap-2 self-start sm:self-center">
-          <div class="calc-icon-wrapper w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-b from-[#1b6cd9] to-[#0d9488] shadow-sm flex items-center justify-center shrink-0" style="background: linear-gradient(180deg, #1b6cd9, #0d9488);">
-            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+          <div class="calc-icon-wrapper w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-b from-[#1b6cd9] to-[#0d9488] shadow-sm flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="4" y="2" width="16" height="20" rx="2"></rect>
               <line x1="8" y1="6" x2="16" y2="6"></line>
               <line x1="16" y1="14" x2="16" y2="18"></line>
@@ -824,16 +897,16 @@
 
         <!-- Controls -->
         <div class="flex items-center gap-1 sm:gap-1.5 flex-wrap justify-end w-full sm:w-auto">
-          <button id="btn-swap-boards" class="btn-header-control px-2.5 sm:px-3 py-1 sm:py-1.5 btn-text-swap bg-slate-800 hover:bg-slate-900 rounded-lg shadow-xs transition active:scale-95 flex items-center gap-1" style="border: none; cursor: pointer;">
-            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 12px; height: 12px;">
+          <button id="btn-swap-boards" class="btn-header-control px-2.5 sm:px-3 py-1 sm:py-1.5 btn-text-swap bg-slate-800 hover:bg-slate-900 rounded-lg shadow-xs transition active:scale-95 flex items-center gap-1">
+            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
             </svg>
             실속형 ⇄ 고급형 위치 전환
           </button>
-          <button id="btn-select-all" class="btn-header-control px-2 sm:px-2.5 py-1 sm:py-1.5 btn-text-select-all bg-slate-100 hover:bg-slate-200 rounded-lg transition active:scale-95" style="border: none; cursor: pointer;">
+          <button id="btn-select-all" class="btn-header-control px-2 sm:px-2.5 py-1 sm:py-1.5 btn-text-select-all bg-slate-100 hover:bg-slate-200 rounded-lg transition active:scale-95">
             전체 선택
           </button>
-          <button id="btn-reset" class="btn-header-control px-2 sm:px-2.5 py-1 sm:py-1.5 btn-text-reset bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition active:scale-95" style="cursor: pointer;">
+          <button id="btn-reset" class="btn-header-control px-2 sm:px-2.5 py-1 sm:py-1.5 btn-text-reset bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition active:scale-95">
             초기화
           </button>
         </div>
@@ -922,7 +995,7 @@
 
       <!-- 견적서 저장 버튼 -->
       <div class="w-full mt-3 px-1 sm:px-2">
-        <button id="btn-go-to-save" type="button" class="btn-save-quote-style w-full py-3.5 rounded-xl transition active:scale-[0.99] flex items-center justify-center gap-2" style="cursor: pointer;">
+        <button id="btn-go-to-save" type="button" class="btn-save-quote-style w-full py-3.5 rounded-xl transition active:scale-[0.99] flex items-center justify-center gap-2">
           <svg class="btn-save-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
           </svg>
@@ -939,17 +1012,17 @@
   <div id="view-save-form" class="hidden w-full max-w-[760px] mx-auto px-3 sm:px-4 py-4">
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
       <!-- 폼 상단 헤더 -->
-      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-4 sm:p-5 flex items-center justify-between" style="background: linear-gradient(90deg, #0f172a, #1e293b, #0f172a);">
+      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-4 sm:p-5 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400" style="width: 32px; height: 32px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(96, 165, 250, 0.3); color: #60a5fa;">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <div class="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           </div>
           <div>
             <h2 class="form-title-text tracking-tight">견적서 발행 정보 입력</h2>
             <p class="form-desc-text">선택하신 내역으로 정식 비교 견적서를 PDF로 저장합니다.</p>
           </div>
         </div>
-        <button id="btn-back-to-calc" type="button" class="form-btn-back-text px-2.5 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg transition" style="border: none; cursor: pointer;">
+        <button id="btn-back-to-calc" type="button" class="form-btn-back-text px-2.5 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg transition">
           ← 뒤로가기
         </button>
       </div>
@@ -973,13 +1046,13 @@
         <!-- 1. 회사명 -->
         <div>
           <label class="form-label-text">회사명</label>
-          <input type="text" id="input-company" class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg outline-none transition" placeholder="회사명을 입력하세요" value="" required />
+          <input type="text" id="input-company" class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="회사명을 입력하세요" value="" required />
         </div>
 
         <!-- 2. 고객명 -->
         <div>
           <label class="form-label-text">고객명</label>
-          <input type="text" id="input-client" class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg outline-none transition" placeholder="이름을 입력해 주세요" required />
+          <input type="text" id="input-client" class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="이름을 입력해 주세요" required />
         </div>
 
         <!-- 3. 시공기한 -->
@@ -993,7 +1066,7 @@
             <input 
               type="date" 
               id="input-target-date" 
-              class="form-input-text date-input-inline w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-md outline-none transition" 
+              class="form-input-text date-input-inline w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" 
               required 
             />
           </div>
@@ -1002,17 +1075,17 @@
         <!-- 4. 연락처 -->
         <div>
           <label class="form-label-text">연락처</label>
-          <input type="tel" id="input-contact" class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg outline-none transition" placeholder="(예)010-1234-5678" required />
+          <input type="tel" id="input-contact" class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="(예)010-1234-5678" required />
         </div>
 
-        <!-- 5. 견적일자 (캘린더 아이콘 클릭 또는 인풋 클릭 시 아래로 캘린더 피커 오픈) -->
+        <!-- 5. 견적일자 -->
         <div>
           <label for="input-date" class="form-label-text">견적일자</label>
           <div class="date-inline-wrapper">
             <input 
               type="date" 
               id="input-date" 
-              class="form-input-text date-input-inline w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-md outline-none transition" 
+              class="form-input-text date-input-inline w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" 
               required 
             />
           </div>
@@ -1021,10 +1094,10 @@
         <!-- 6. 특이사항 및 비고 -->
         <div>
           <label class="form-label-text">특이사항 및 비고</label>
-          <textarea id="input-notes" rows="3" class="form-textarea-text w-full px-3 py-2 border border-slate-300 rounded-lg outline-none transition resize-none" placeholder="특이사항 및 비고 내용을 입력하세요"></textarea>
+          <textarea id="input-notes" rows="3" class="form-textarea-text w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition resize-none" placeholder="특이사항 및 비고 내용을 입력하세요"></textarea>
         </div>
 
-        <!-- 선급금 / 잔금 2열 배치 (실속형 선택합계의 50% 자동계산) -->
+        <!-- 선급금 / 잔금 2열 배치 -->
         <div class="pt-1">
           <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-2.5">
             <!-- 선급금 (50%) -->
@@ -1033,7 +1106,7 @@
               <input 
                 type="text" 
                 id="input-advance" 
-                class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg outline-none transition" 
+                class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none transition" 
                 placeholder="선급금 50%" 
               />
             </div>
@@ -1043,7 +1116,7 @@
               <input 
                 type="text" 
                 id="input-balance" 
-                class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg outline-none transition" 
+                class="form-input-text w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-red-400 focus:border-red-400 outline-none transition" 
                 placeholder="잔금 50%" 
               />
             </div>
@@ -1054,11 +1127,10 @@
           </p>
         </div>
 
-
         <!-- 하단 PDF 저장 실행 버튼 -->
         <div class="pt-2">
-          <button id="btn-generate-pdf" type="submit" class="w-full py-3.5 bg-slate-900 hover:bg-black text-white rounded-xl shadow-lg transition active:scale-[0.99] flex items-center justify-center gap-2" style="border: none; cursor: pointer;">
-            <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px; color: #fb7185;">
+          <button id="btn-generate-pdf" type="submit" class="w-full py-3.5 bg-slate-900 hover:bg-black text-white rounded-xl shadow-lg transition active:scale-[0.99] flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
             <span class="form-btn-text">PDF 견적서 다운로드 및 확인</span>
@@ -1071,52 +1143,52 @@
   <!-- ========================================================
        3. PDF 변환 전용 템플릿
        ======================================================== -->
-  <div class="pdf-print-wrapper" style="position: absolute; left: -9999px; top: -9999px;">
+  <div style="position: absolute; left: -9999px; top: -9999px;">
     <div id="pdf-printable-area" style="width: 760px; padding: 36px 32px; background: #ffffff; color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif;">
       
       <!-- PDF 헤더 -->
-      <div style="border-bottom: 2px solid transparent; padding-bottom: 14px; margin-bottom: 24px;">
+      <div style="border-bottom: 2px solid #0f172a; padding-bottom: 14px; margin-bottom: 24px;">
         <h1 class="pdf-title-text" style="font-size: 26px; font-weight: 900; color: #0f172a; margin: 0; letter-spacing: -0.5px;">인테리어 견적서</h1>
         <p class="pdf-sub-title-text" style="font-size: 14px; font-weight: 500; color: #475569; margin: 4px 0 0 0;">실속형 vs 고급형 비교 견적 요약</p>
       </div>
 
       <!-- 고객 및 공사 정보 표 -->
-      <div style="border: 1px solid transparent; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 8px; overflow: hidden; margin-bottom: 20px; box-sizing: border-box;">
+      <div style="border: 1px solid #cbd5e1; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 8px; overflow: hidden; margin-bottom: 20px; box-sizing: border-box;">
         <table style="width: 100%; border-collapse: collapse; text-align: left; box-sizing: border-box;">
           <tbody>
             <!-- 1. 회사명 -->
             <tr>
-              <th class="pdf-th-text" style="width: 22%; background: #f1f5f9; border-right: 1px solid transparent; border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">회사명</th>
-              <td id="pdf-company-cell" class="pdf-td-text" style="width: 78%; border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
+              <th class="pdf-th-text" style="width: 22%; background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">회사명</th>
+              <td id="pdf-company-cell" class="pdf-td-text" style="width: 78%; border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
             </tr>
             <!-- 2. 고객명 -->
             <tr>
-              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid transparent; border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">고객명</th>
-              <td id="pdf-client" class="pdf-td-text" style="border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
+              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">고객명</th>
+              <td id="pdf-client" class="pdf-td-text" style="border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
             </tr>
             <!-- 3. 시공기한 -->
             <tr>
-              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid transparent; border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">시공기한</th>
-              <td id="pdf-target-date" class="pdf-td-text" style="border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
+              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">시공기한</th>
+              <td id="pdf-target-date" class="pdf-td-text" style="border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
             </tr>
             <!-- 4. 연락처 -->
             <tr>
-              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid transparent; border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">연락처</th>
-              <td id="pdf-contact" class="pdf-td-text" style="border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
+              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">연락처</th>
+              <td id="pdf-contact" class="pdf-td-text" style="border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
             </tr>
             <!-- 5. 견적일자 -->
             <tr>
-              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid transparent; border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">견적일자</th>
-              <td id="pdf-date-cell" class="pdf-td-text" style="border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
+              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">견적일자</th>
+              <td id="pdf-date-cell" class="pdf-td-text" style="border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
             </tr>
             <!-- 6. 특이사항 및 비고 -->
             <tr>
-              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid transparent; border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">특이사항 및 비고</th>
-              <td id="pdf-notes" class="pdf-td-text" style="border-bottom: 1px solid transparent; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b; white-space: pre-line;"></td>
+              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #0f172a;">특이사항 및 비고</th>
+              <td id="pdf-notes" class="pdf-td-text" style="border-bottom: 1px solid #cbd5e1; padding: 9px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b; white-space: pre-line;"></td>
             </tr>
             <!-- 7. 선급금 / 잔금 -->
             <tr>
-              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid transparent; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #b91c1c;">대금 조건</th>
+              <th class="pdf-th-text" style="background: #f1f5f9; border-right: 1px solid #cbd5e1; padding: 9px 12px; font-size: 15px; font-weight: 700; color: #b91c1c;">대금 조건</th>
               <td style="padding: 9px 12px; font-size: 13px; font-weight: 600; color: #1e293b;">
                 <span style="color: #b91c1c; font-weight: 700;">선급금(50%):</span> <span id="pdf-advance-text">0원</span> &nbsp;|&nbsp; 
                 <span style="color: #b91c1c; font-weight: 700;">잔금(50%):</span> <span id="pdf-balance-text">0원</span>
@@ -1127,17 +1199,17 @@
       </div>
 
       <!-- 견적 총액 요약 표 -->
-      <div style="border: 1px solid transparent; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 8px; overflow: hidden; margin-bottom: 20px; box-sizing: border-box;">
+      <div style="border: 1px solid #cbd5e1; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 8px; overflow: hidden; margin-bottom: 20px; box-sizing: border-box;">
         <table style="width: 100%; border-collapse: collapse; text-align: center; box-sizing: border-box;">
           <thead>
             <tr style="background: #0f172a; color: #ffffff;">
-              <th class="pdf-total-th-text" style="padding: 11px 12px; width: 50%; border-right: 1px solid transparent; font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px;">실속형 선택 합계 (VAT 별도)</th>
+              <th class="pdf-total-th-text" style="padding: 11px 12px; width: 50%; border-right: 1px solid #334155; font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px;">실속형 선택 합계 (VAT 별도)</th>
               <th class="pdf-total-th-text" style="padding: 11px 12px; width: 50%; font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px;">고급형 선택 합계 (VAT 별도)</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td id="pdf-total-blue" class="pdf-total-blue-amount" style="padding: 18px 12px; border-right: 1px solid transparent; color: #0267c1; background: #f8fbff; font-weight: 700; font-size: 20px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">0 원</td>
+              <td id="pdf-total-blue" class="pdf-total-blue-amount" style="padding: 18px 12px; border-right: 1px solid #cbd5e1; color: #0267c1; background: #f8fbff; font-weight: 700; font-size: 20px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">0 원</td>
               <td id="pdf-total-green" class="pdf-total-green-amount" style="padding: 18px 12px; color: #13773b; background: #f6fbf8; font-weight: 700; font-size: 20px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">0 원</td>
             </tr>
           </tbody>
@@ -1145,7 +1217,7 @@
       </div>
 
       <!-- 하단 확인 안내 박스 (별도 장비대 안내 포함) -->
-      <div style="background: #f8fafc; border: 1px solid transparent; border-right: 1px solid transparent; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 8px; padding: 14px 16px; box-sizing: border-box;">
+      <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 8px; padding: 14px 16px; box-sizing: border-box;">
         <p style="margin: 0 0 4px 0; font-size: 12.5px; font-weight: 800; color: #dc2626;">※현장철거 및 장비사용시 장비대는 별도입니다.</p>
         <p class="pdf-notice-primary-text" style="margin: 0; font-size: 12px; font-weight: 700; color: #0f172a; line-height: 1.55;">• 본 문서는 견적 산출기에서 선택된 실속형 및 고급형 비교 견적 요약서입니다.</p>
         <p class="pdf-notice-secondary-text" style="margin: 2px 0 0 0; font-size: 12px; font-weight: 600; color: #475569; line-height: 1.55;">• 현장 상황 및 추가 공정에 따라 세부 견적 금액이 변동될 수 있습니다.</p>
@@ -1155,7 +1227,7 @@
   </div>
 
   <!-- ========================================================
-       4. 핵심 로직 & 데이터 스크립트 (오프라인 완전 구동)
+       4. 핵심 로직 & 데이터 스크립트
        ======================================================== -->
   <script>
     const CATEGORIES = [
@@ -1270,10 +1342,10 @@
     function createBoxCard(item, col) {
       const isBlueCol = col === 'blue';
       const activeStyle = isBlueCol 
-        ? 'bg-blueBoard-active border-blueBoard-main shadow-xs' 
-        : 'bg-greenBoard-active border-greenBoard-main shadow-xs';
+        ? 'bg-blueBoard-active border-blueBoard-main shadow-xs ring-1 ring-blueBoard-main' 
+        : 'bg-greenBoard-active border-greenBoard-main shadow-xs ring-1 ring-greenBoard-main';
       const defaultStyle = isBlueCol
-        ? 'bg-white border-[#b9d2eb] hover:border-blue-400 hover:shadow-xs'
+        ? 'bg-white border-slate-300 hover:border-slate-400 hover:shadow-xs'
         : 'bg-white border-[#badbc5] hover:border-green-400 hover:shadow-xs';
 
       const isOriginBlue = item.origin === 'blue';
@@ -1293,8 +1365,8 @@
       card.dataset.col = col;
 
       card.innerHTML = `
-        <button type="button" class="btn-check-toggle w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border shrink-0 flex items-center justify-center transition-colors ${item.selected ? (isBlueCol ? 'bg-blueBoard-main border-blueBoard-main text-white' : 'bg-greenBoard-main border-greenBoard-main text-white') : (isBlueCol ? 'border-[#b9d2eb] bg-white hover:border-blue-400' : 'border-[#badbc5] bg-white hover:border-green-400')}" title="클릭 시 합계 금액이 합산/차감됩니다">
-          ${item.selected ? '<svg class="w-2 h-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 8px; height: 8px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
+        <button type="button" class="btn-check-toggle w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border shrink-0 flex items-center justify-center transition-colors ${item.selected ? (isBlueCol ? 'bg-blueBoard-main border-blueBoard-main text-white' : 'bg-greenBoard-main border-greenBoard-main text-white') : (isBlueCol ? 'border-slate-300 bg-white hover:border-slate-400' : 'border-[#badbc5] bg-white hover:border-green-400')}" title="클릭 시 합계 금액이 합산/차감됩니다">
+          ${item.selected ? '<svg class="w-2 h-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
         </button>
 
         <div class="flex-1 min-w-0 px-0.5 pointer-events-none">
@@ -1322,115 +1394,39 @@
         e.stopPropagation();
         toggleSelectCard(card);
       });
-      attachOfflineDragEvents(card);
     }
 
-    /* ================================================================
-       [오프라인 내장] 네이티브 앱용 드래그 앤 드롭 엔진 (외부 CDN 의존 제거)
-       ================================================================ */
-    let currentDraggingCard = null;
-    let dragCloneEl = null;
-    let dragStartX = 0;
-    let dragStartY = 0;
+    function initializeSortables() {
+      document.querySelectorAll('.drop-slot-area').forEach(slot => {
+        new Sortable(slot, {
+          group: 'quote-shared-group',
+          animation: 200,
+          ghostClass: 'sortable-ghost',
+          chosenClass: 'sortable-chosen',
+          dragClass: 'sortable-drag',
+          fallbackOnBody: true,
+          swapThreshold: 0.65,
+          touchStartThreshold: 3,
+          filter: '.btn-check-toggle',
+          preventOnFilter: false,
+          delay: 0,
+          delayOnTouchOnly: false,
+          onEnd: function (evt) {
+            const card = evt.item;
+            const targetSlot = evt.to;
+            const targetCol = targetSlot.dataset.col;
+            const prevCol = card.dataset.col;
 
-    function attachOfflineDragEvents(card) {
-      card.addEventListener('touchstart', onTouchStartDrag, { passive: false });
-      card.addEventListener('mousedown', onMouseDownDrag);
+            if (targetCol !== prevCol) {
+              applyColumnSwitch(card, prevCol, targetCol);
+            }
+
+            syncOrderFromDOM();
+            calculateTotals();
+          }
+        });
+      });
     }
-
-    function startDragOperation(card, x, y) {
-      currentDraggingCard = card;
-      const rect = card.getBoundingClientRect();
-      dragStartX = x - rect.left;
-      dragStartY = y - rect.top;
-
-      dragCloneEl = card.cloneNode(true);
-      dragCloneEl.className += ' sortable-drag';
-      dragCloneEl.style.position = 'fixed';
-      dragCloneEl.style.zIndex = '99999';
-      dragCloneEl.style.pointerEvents = 'none';
-      dragCloneEl.style.width = rect.width + 'px';
-      dragCloneEl.style.left = (x - dragStartX) + 'px';
-      dragCloneEl.style.top = (y - dragStartY) + 'px';
-      document.body.appendChild(dragCloneEl);
-
-      card.classList.add('sortable-ghost');
-    }
-
-    function moveDragOperation(x, y) {
-      if (!dragCloneEl) return;
-      dragCloneEl.style.left = (x - dragStartX) + 'px';
-      dragCloneEl.style.top = (y - dragStartY) + 'px';
-    }
-
-    function endDragOperation(x, y) {
-      if (!currentDraggingCard) return;
-
-      if (dragCloneEl) {
-        dragCloneEl.remove();
-        dragCloneEl = null;
-      }
-      currentDraggingCard.classList.remove('sortable-ghost');
-
-      const elemUnder = document.elementFromPoint(x, y);
-      const targetSlot = elemUnder ? elemUnder.closest('.drop-slot-area') : null;
-
-      if (targetSlot) {
-        const targetCol = targetSlot.dataset.col;
-        const prevCol = currentDraggingCard.dataset.col;
-
-        targetSlot.appendChild(currentDraggingCard);
-
-        if (targetCol !== prevCol) {
-          applyColumnSwitch(currentDraggingCard, prevCol, targetCol);
-        }
-        syncOrderFromDOM();
-        calculateTotals();
-      }
-
-      currentDraggingCard = null;
-    }
-
-    function onTouchStartDrag(e) {
-      if (e.target.closest('.btn-check-toggle')) return;
-      const t = e.touches[0];
-      startDragOperation(this, t.clientX, t.clientY);
-
-      const onTouchMove = (moveEvt) => {
-        const mt = moveEvt.touches[0];
-        moveDragOperation(mt.clientX, mt.clientY);
-      };
-
-      const onTouchEnd = (endEvt) => {
-        const et = endEvt.changedTouches[0];
-        endDragOperation(et.clientX, et.clientY);
-        window.removeEventListener('touchmove', onTouchMove);
-        window.removeEventListener('touchend', onTouchEnd);
-      };
-
-      window.addEventListener('touchmove', onTouchMove, { passive: false });
-      window.addEventListener('touchend', onTouchEnd);
-    }
-
-    function onMouseDownDrag(e) {
-      if (e.button !== 0 || e.target.closest('.btn-check-toggle')) return;
-      startDragOperation(this, e.clientX, e.clientY);
-
-      const onMouseMove = (moveEvt) => {
-        moveDragOperation(moveEvt.clientX, moveEvt.clientY);
-      };
-
-      const onMouseUp = (upEvt) => {
-        endDragOperation(upEvt.clientX, upEvt.clientY);
-        window.removeEventListener('mousemove', onMouseMove);
-        window.removeEventListener('mouseup', onMouseUp);
-      };
-
-      window.addEventListener('mousemove', onMouseMove);
-      window.addEventListener('mouseup', onMouseUp);
-    }
-
-    function initializeSortables() {}
 
     function applyColumnSwitch(card, fromCol, toCol) {
       card.dataset.col = toCol;
@@ -1465,10 +1461,10 @@
     function updateCardVisual(card, item, currentCol) {
       const isCurrentBlue = currentCol === 'blue';
       const activeStyle = isCurrentBlue 
-        ? 'bg-blueBoard-active border-blueBoard-main shadow-xs' 
-        : 'bg-greenBoard-active border-greenBoard-main shadow-xs';
+        ? 'bg-blueBoard-active border-blueBoard-main shadow-xs ring-1 ring-blueBoard-main' 
+        : 'bg-greenBoard-active border-greenBoard-main shadow-xs ring-1 ring-greenBoard-main';
       const defaultStyle = isCurrentBlue
-        ? 'bg-white border-[#b9d2eb] hover:border-blue-400 hover:shadow-xs'
+        ? 'bg-white border-slate-300 hover:border-slate-400 hover:shadow-xs'
         : 'bg-white border-[#badbc5] hover:border-green-400 hover:shadow-xs';
 
       card.className = `draggable-card box-item-card relative flex items-center justify-between gap-1 rounded-md border px-1.5 py-1 transition-all duration-150 ${item.selected ? activeStyle : defaultStyle}`;
@@ -1476,9 +1472,9 @@
       const checkBtn = card.querySelector('.btn-check-toggle');
       if (item.selected) {
         checkBtn.className = `btn-check-toggle w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border shrink-0 flex items-center justify-center transition-colors ${isCurrentBlue ? 'bg-blueBoard-main border-blueBoard-main text-white' : 'bg-greenBoard-main border-greenBoard-main text-white'}`;
-        checkBtn.innerHTML = '<svg class="w-2 h-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 8px; height: 8px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>';
+        checkBtn.innerHTML = '<svg class="w-2 h-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>';
       } else {
-        checkBtn.className = `btn-check-toggle w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border shrink-0 flex items-center justify-center transition-colors ${isCurrentBlue ? 'border-[#b9d2eb] bg-white hover:border-blue-400' : 'border-[#badbc5] bg-white hover:border-green-400'}`;
+        checkBtn.className = `btn-check-toggle w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border shrink-0 flex items-center justify-center transition-colors ${isCurrentBlue ? 'border-slate-300 bg-white hover:border-slate-400' : 'border-[#badbc5] bg-white hover:border-green-400'}`;
         checkBtn.innerHTML = '';
       }
 
@@ -1489,7 +1485,6 @@
           textClass += isCurrentBlue ? ' item-text-selected-blue' : ' item-text-selected-green';
         }
         textSpan.className = textClass;
-
       }
 
       const badge = card.querySelector('.tag-badge');
@@ -1658,7 +1653,7 @@
       }
     });
 
-    // [오프라인 연동] PDF 생성 및 다운로드 실행 (네이티브 인쇄/PDF 저장 다이얼로그 호출)
+    // PDF 생성 및 다운로드 실행
     quoteForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -1683,8 +1678,30 @@
       document.getElementById('pdf-total-blue').textContent = currentBlueSum.toLocaleString('ko-KR') + ' 원';
       document.getElementById('pdf-total-green').textContent = currentGreenSum.toLocaleString('ko-KR') + ' 원';
 
-      // 오프라인 기기 내장 네이티브 프린트 및 PDF 저장 엔진 호출
-      window.print();
+      // PDF 렌더링 옵션 및 생성
+      const printElement = document.getElementById('pdf-printable-area');
+      const opt = {
+        margin: [14, 12, 14, 12],
+        filename: `인테리어_견적서_${client || '고객'}_${date}.pdf`,
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: { scale: 2.5, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      const submitBtn = document.getElementById('btn-generate-pdf');
+      const originBtnHtml = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="form-btn-text">PDF 파일 생성 중입니다...</span>';
+
+      html2pdf().set(opt).from(printElement).save().then(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originBtnHtml;
+      }).catch(err => {
+        console.error(err);
+        alert('PDF 생성 중 오류가 발생했습니다.');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originBtnHtml;
+      });
     });
 
     window.addEventListener('DOMContentLoaded', () => {
