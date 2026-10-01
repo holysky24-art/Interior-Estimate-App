@@ -628,6 +628,97 @@
       border-radius: 4px;
     }
   </style>
+   
+	<SCRIPT>
+	// PDF 생성 및 다운로드 실행
+    quoteForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const company = document.getElementById('input-company').value.trim();
+      const client = document.getElementById('input-client').value.trim();
+      const targetDate = document.getElementById('input-target-date').value;
+      const contact = document.getElementById('input-contact').value.trim();
+      const date = document.getElementById('input-date').value;
+      const notes = document.getElementById('input-notes').value.trim();
+      const advanceVal = document.getElementById('input-advance').value.trim();
+      const balanceVal = document.getElementById('input-balance').value.trim();
+
+      // 당일 날짜(YYYY-MM-DD) 산출
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const todayDateStr = `${yyyy}-${mm}-${dd}`;
+
+      // PDF 템플릿에 데이터 바인딩
+      document.getElementById('pdf-company-cell').textContent = company;
+      document.getElementById('pdf-client').textContent = client;
+      document.getElementById('pdf-target-date').textContent = targetDate || '협의 후 결정';
+      document.getElementById('pdf-contact').textContent = contact;
+      document.getElementById('pdf-date-cell').textContent = date;
+      document.getElementById('pdf-notes').textContent = notes || '특이사항 없음';
+      document.getElementById('pdf-advance-text').textContent = advanceVal || '0원';
+      document.getElementById('pdf-balance-text').textContent = balanceVal || '0원';
+      document.getElementById('pdf-total-blue').textContent = currentBlueSum.toLocaleString('ko-KR') + ' 원';
+      document.getElementById('pdf-total-green').textContent = currentGreenSum.toLocaleString('ko-KR') + ' 원';
+
+      const fileName = `인테리어_견적서_${client || '고객'}_${todayDateStr}.pdf`;
+      const printElement = document.getElementById('pdf-printable-area');
+
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: fileName,
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: { 
+          scale: 3, 
+          useCORS: true, 
+          letterRendering: true, 
+          backgroundColor: '#ffffff', 
+          scrollX: 0, 
+          scrollY: 0,
+          dpi: 300
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      const submitBtn = document.getElementById('btn-generate-pdf');
+      const originBtnHtml = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="form-btn-text">PDF 파일 생성 중입니다...</span>';
+
+      // .save() 대신 .outputPdf('blob')를 사용하여 Blob 수동 다운로드 처리
+      html2pdf()
+        .set(opt)
+        .from(printElement)
+        .outputPdf('blob')
+        .then((pdfBlob) => {
+          const blobUrl = URL.createObjectURL(pdfBlob);
+          const downloadLink = document.createElement('a');
+          
+          downloadLink.href = blobUrl;
+          downloadLink.download = fileName;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          
+          setTimeout(() => {
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(blobUrl);
+          }, 200);
+
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originBtnHtml;
+        })
+        .catch((err) => {
+          console.error(err);
+          alert('PDF 생성 중 오류가 발생했습니다.');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originBtnHtml;
+        });
+    });
+	
+	</SCRIPT>
+	
+	
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col items-center pb-8">
 
