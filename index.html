@@ -901,7 +901,6 @@
             </svg>
             <span class="form-btn-text">PDF 견적서 다운로드 및 확인</span>
 
-
           </button>
         </div>
       </form>
@@ -998,15 +997,41 @@
        4. 핵심 로직 & 데이터 스크립트
        ======================================================== -->
   <script>
+    // 공통 카테고리 Key 및 번호
     const CATEGORIES = [
-      { key: 'wall', no: '01', title: '벽체공사1' },
-      { key: 'floor', no: '02', title: '바닥공사' },
-      { key: 'bath', no: '03', title: '화장실 공사' },
-      { key: 'veranda', no: '04', title: '베란다 공사(1개소 기준)' },
-      { key: 'sink', no: '05', title: '씽크대 공사(10자 기준)' },
-      { key: 'paint_wood', no: '06', title: '페인트 공사 OR 목공사' },
-      { key: 'lighting', no: '07', title: '조명공사' }
+      { key: 'wall', no: '01' },
+      { key: 'floor', no: '02' },
+      { key: 'bath', no: '03' },
+      { key: 'veranda', no: '04' },
+      { key: 'sink', no: '05' },
+      { key: 'paint_wood', no: '06' },
+      { key: 'lighting', no: '07' }
     ];
+
+    /* ================================================================
+       [★ 공종 품명 타이틀 텍스트 분리 컨트롤 센터 ★]
+       실속형(blue)과 고급형(green)의 타이틀을 각자 다르게 지정할 수 있습니다.
+       ================================================================ */
+    const CATEGORY_TITLES = {
+      blue: {
+        wall: '벽체공사1',
+        floor: '바닥공사',
+        bath: '화장실 공사',
+        veranda: '베란다 공사(1개소 기준)',
+        sink: '씽크대 공사(10자 기준)',
+        paint_wood: '페인트 공사 OR 목공사',
+        lighting: '조명공사'
+      },
+      green: {
+        wall: '벽체공사2',
+        floor: '바닥공사',
+        bath: '화장실 공사',
+        veranda: '베란다 공사(1개소 기준)',
+        sink: '씽크대 공사(10자 기준)',
+        paint_wood: '페인트 공사 OR 목공사',
+        lighting: '조명공사'
+      }
+    };
 
     const INITIAL_DATA = {
       blue: [
@@ -1039,33 +1064,40 @@
         { id: 'b21', cat: 'lighting', origin: 'blue', name: '나노 고급 스위치 및 콘센트 교체', price: 220000, selected: false }
       ],
       green: [
-        { id: 'g1', cat: 'wall', origin: 'green', name: '실크', price: 1850000, selected: false },
-        { id: 'g2', cat: 'wall', origin: 'green', name: '올퍼티 올샌딩 하이엔드 하지작업', price: 650000, selected: false },
+        /* 01. 벽체공사1 */
+        { id: 'g1', cat: 'wall', origin: 'green', name: '친환경 수입 실크벽지 전체도배', price: 1850000, selected: false },
+        { id: 'g2', cat: 'wall', origin: 'green', name: '석고보드 2P 취부 및 평탄화 하지작업', price: 650000, selected: false },
         { id: 'g3', cat: 'wall', origin: 'green', name: '무몰딩 직각 코너 프리미엄 마감', price: 450000, selected: false },
 
-        { id: 'g4', cat: 'floor', origin: 'green', name: '강마루', price: 3400000, selected: false },
-        { id: 'g5', cat: 'floor', origin: 'green', name: '충격흡수/방음 특수 차음패드 시공', price: 450000, selected: false },
-        { id: 'g6', cat: 'floor', origin: 'green', name: '마이너스 히든 걸레받이 목공 일체', price: 350000, selected: false },
+        /* 02. 바닥공사 */
+        { id: 'g4', cat: 'floor', origin: 'green', name: '광폭 원목마루 프리미엄 시공', price: 3400000, selected: false },
+        { id: 'g5', cat: 'floor', origin: 'green', name: '층간차음 특수 일체형 완충패드', price: 450000, selected: false },
+        { id: 'g6', cat: 'floor', origin: 'green', name: '마이너스 히든 걸레받이 알루미늄 마감', price: 350000, selected: false },
 
-        { id: 'g7', cat: 'bath', origin: 'green', name: '고급타일 덧방/브랜드도기시공', price: 2800000, selected: false },
-        { id: 'g8', cat: 'bath', origin: 'green', name: '아메리칸스탠다드 일체형 비데', price: 1350000, selected: false },
-        { id: 'g9', cat: 'bath', origin: 'green', name: '무광 니켈 매립수전 & 조적 욕조', price: 1100000, selected: false },
+        /* 03. 화장실 공사 */
+        { id: 'g7', cat: 'bath', origin: 'green', name: '600각 포세린 타일 졸리컷 정밀시공', price: 2800000, selected: false },
+        { id: 'g8', cat: 'bath', origin: 'green', name: '아메리칸스탠다드 일체형 비데 양변기', price: 1350000, selected: false },
+        { id: 'g9', cat: 'bath', origin: 'green', name: '무광 니켈 매립수전 & 조적 세면대', price: 1100000, selected: false },
 
-        { id: 'g10', cat: 'veranda', origin: 'green', name: '탄성코트', price: 780000, selected: false },
-        { id: 'g11', cat: 'veranda', origin: 'green', name: '포세린 타일 + 아덱스 에폭시 줄눈', price: 580000, selected: false },
-        { id: 'g12', cat: 'veranda', origin: 'green', name: '단열 터닝도어 시공 및 결로차단', price: 340000, selected: false },
+        /* 04. 베란다 공사 */
+        { id: 'g10', cat: 'veranda', origin: 'green', name: '친환경 세라믹 탄성코트 단열뿜칠', price: 780000, selected: false },
+        { id: 'g11', cat: 'veranda', origin: 'green', name: '포세린 논슬립 타일 및 아덱스 에폭시 줄눈', price: 580000, selected: false },
+        { id: 'g12', cat: 'veranda', origin: 'green', name: '시스템 단열 터닝도어 교체(로이유리)', price: 340000, selected: false },
 
-        { id: 'g13', cat: 'sink', origin: 'green', name: 'PET/LG대리석/사각볼/고급수전/매립후드/인덕션', price: 3200000, selected: false },
-        { id: 'g14', cat: 'sink', origin: 'green', name: '스페인 천연 세라믹 상판 (12T)', price: 1400000, selected: false },
-        { id: 'g15', cat: 'sink', origin: 'green', name: '블룸 레일 & 깜포르테 사각 싱크볼', price: 950000, selected: false },
+        /* 05. 씽크대 공사 */
+        { id: 'g13', cat: 'sink', origin: 'green', name: '도장도어 맞춤 싱크대 (블룸 하드웨어)', price: 3200000, selected: false },
+        { id: 'g14', cat: 'sink', origin: 'green', name: '12T 최고급 천연 세라믹 상판', price: 1400000, selected: false },
+        { id: 'g15', cat: 'sink', origin: 'green', name: '깜포르테 사각 싱크볼 & 거위목 무광수전', price: 950000, selected: false },
 
-        { id: 'g16', cat: 'paint_wood', origin: 'green', name: '걸레받이/천정몰딩/문짝 교체', price: 1250000, selected: false },
-        { id: 'g17', cat: 'paint_wood', origin: 'green', name: '히든도어 9mm 문선 목공 맞춤제작', price: 1100000, selected: false },
-        { id: 'g18', cat: 'paint_wood', origin: 'green', name: '간접 등박스 및 시스템 에어컨 단내림', price: 650000, selected: false },
+        /* 06. 페인트 공사 OR 목공사 */
+        { id: 'g16', cat: 'paint_wood', origin: 'green', name: '영림 9mm 문선 도어 셋트 신설교체', price: 1250000, selected: false },
+        { id: 'g17', cat: 'paint_wood', origin: 'green', name: '히든도어 및 스텝도어 목공 맞춤시공', price: 1100000, selected: false },
+        { id: 'g18', cat: 'paint_wood', origin: 'green', name: '시스템 에어컨 단내림 및 간접등박스', price: 650000, selected: false },
 
-        { id: 'g19', cat: 'lighting', origin: 'green', name: '걸레받이/천정몰딩/문짝 교체', price: 1200000, selected: false },
-        { id: 'g20', cat: 'lighting', origin: 'green', name: '스마트 IoT 조명 제어 & 커튼 간접등', price: 550000, selected: false },
-        { id: 'g21', cat: 'lighting', origin: 'green', name: '르그랑 아테오 유럽형 하이엔드 스위치', price: 450000, selected: false }
+        /* 07. 조명공사 */
+        { id: 'g19', cat: 'lighting', origin: 'green', name: '마그네틱 라인조명 및 2인치 매립등', price: 1200000, selected: false },
+        { id: 'g20', cat: 'lighting', origin: 'green', name: '스마트 IoT 디밍 제어 시스템 구축', price: 550000, selected: false },
+        { id: 'g21', cat: 'lighting', origin: 'green', name: '르그랑 아테오 하이엔드 유럽형 스위치', price: 450000, selected: false }
       ]
     };
 
@@ -1086,6 +1118,9 @@
           const slotBgClass = isBlue ? 'drop-slot-blue' : 'drop-slot-green';
           const noTextClass = isBlue ? 'category-no-text-blue' : 'category-no-text-green';
           const titleTextClass = isBlue ? 'category-title-text-blue' : 'category-title-text-green';
+          
+          // 실속형과 고급형의 타이틀을 독립적으로 매핑
+          const categoryTitle = CATEGORY_TITLES[col][cat.key] || '';
 
           const groupEl = document.createElement('div');
           groupEl.className = 'item-row-container flex min-h-[64px] sm:min-h-[68px]';
@@ -1095,7 +1130,7 @@
             </div>
             <div class="flex-1 p-1 sm:p-1.5 flex flex-col justify-between min-w-0">
               <div class="flex items-center justify-between mb-0.5 select-none">
-                <span class="${titleTextClass}">${cat.title}</span>
+                <span class="${titleTextClass}">${categoryTitle}</span>
               </div>
               <div class="drop-slot-area flex flex-col gap-0.5 p-0.5 rounded ${slotBgClass}"
                    data-col="${col}" data-cat="${cat.key}">
