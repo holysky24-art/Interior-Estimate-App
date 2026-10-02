@@ -459,54 +459,54 @@
     }
 
     /* ================================================================
-       [★ PDF 견적서 내부 전용 텍스트 CSS 컨트롤 센터 ★]
+       [★ PDF 견적서 내부 전용 텍스트 CSS 컨트롤 센터 (전체 크기 확대 반영) ★]
        ================================================================ */
     .pdf-title-text {
-      font-size: 24px !important;
+      font-size: 26px !important;
       font-weight: 900 !important;
       color: #0f172a !important;
       letter-spacing: -0.5px !important;
-      line-height: 1.15 !important;
+      line-height: 1.2 !important;
     }
 
     .pdf-sub-title-text {
-      font-size: 13px !important;
-      font-weight: 500 !important;
+      font-size: 14px !important;
+      font-weight: 600 !important;
       color: #475569 !important;
-      letter-spacing: 0px !important;
+      letter-spacing: -0.2px !important;
     }
 
     .pdf-th-text {
-      font-size: 12.5px !important;
+      font-size: 13.5px !important;
       font-weight: 700 !important;
       color: #0f172a !important;
       background-color: #f8fafc !important;
     }
 
     .pdf-td-text {
-      font-size: 12px !important;
+      font-size: 13.5px !important;
       font-weight: 600 !important;
       color: #1e293b !important;
       background-color: #ffffff !important;
     }
 
     .pdf-total-th-text {
-      font-size: 12.5px !important;
-      font-weight: 700 !important;
+      font-size: 14.5px !important;
+      font-weight: 800 !important;
       letter-spacing: 0.5px !important;
       color: #ffffff !important;
     }
 
     .pdf-total-blue-amount {
-      font-size: 18px !important;
-      font-weight: 700 !important;
+      font-size: 21px !important;
+      font-weight: 800 !important;
       color: #0267c1 !important;
       font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif !important;
     }
 
     .pdf-total-green-amount {
-      font-size: 18px !important;
-      font-weight: 700 !important;
+      font-size: 21px !important;
+      font-weight: 800 !important;
       color: #13773b !important;
       font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif !important;
     }
@@ -970,152 +970,156 @@
   </div>
 
   <!-- ========================================================
-       3. PDF 변환 전용 템플릿
+       3. PDF 변환 전용 템플릿 (A4 정밀 중앙 정렬 & 1페이지 완결형 구조)
        ======================================================== -->
   <div style="position: absolute; left: -9999px; top: -9999px;">
-    <div id="pdf-printable-area" style="width: 760px; max-width: 760px; padding: 18px 20px; background: #ffffff; color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif; box-sizing: border-box; page-break-inside: avoid;">
+    <!-- A4 규격(210mm x 297mm @ 96dpi ≈ 794px x 1122px) 컨테이너 -->
+    <div id="pdf-page-container" style="width: 794px; min-height: 1120px; max-height: 1120px; background: #ffffff; padding: 24px 20px 20px 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow: hidden;">
+      
+      <div id="pdf-printable-area" style="width: 754px; max-width: 754px; margin: 0 auto; background: #ffffff; color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif; box-sizing: border-box;">
 
-      <!-- PDF 헤더 -->
-      <div style="border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: flex-end; justify-content: space-between;">
-        <div>
-          <h1 class="pdf-title-text" style="font-size: 24px; font-weight: 900; color: #0f172a; margin: 0; letter-spacing: -0.5px; line-height: 1.15;">인테리어 견적서</h1>
-          <p class="pdf-sub-title-text" style="font-size: 13px; font-weight: 500; color: #475569; margin: 3px 0 0 0;">실속형 vs 고급형 비교 견적 요약</p>
-        </div>
-        <div style="display: flex; align-items: center; justify-content: flex-end; flex-shrink: 0; padding-bottom: 2px;">
-          <img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20500%20108%22%20width%3D%22500%22%20height%3D%22108%22%3E%3Cpath%20d%3D%22M73%203%20L3%20105%20H32%20L49%2079%20H103%20L120%20105%20H149%20L97%203%20Z%22%20fill%3D%22%230066d6%22%2F%3E%3Cpath%20d%3D%22M85%2015%20L107%2070%20H67%20Z%22%20fill%3D%22%23ffffff%22%2F%3E%3Cpath%20d%3D%22M15%2091%20C%2058%2052%2C%20120%2050%2C%20175%2061%20C%20132%2068%2C%2068%2081%2C%2015%2091%20Z%22%20fill%3D%22%231e88e5%22%2F%3E%3Cpath%20d%3D%22M21%2083%20C%2064%2051%2C%20124%2052%2C%20168%2059%20C%20128%2064%2C%2072%2076%2C%2021%2083%20Z%22%20fill%3D%22%2342a5f5%22%20opacity%3D%220.85%22%2F%3E%3Ctext%20x%3D%22190%22%20y%3D%2282%22%20font-family%3D%22Pretendard%2C%20%27Noto%20Sans%20KR%27%2C%20%27Apple%20SD%20Gothic%20Neo%27%2C%20%27Malgun%20Gothic%27%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22900%22%20fill%3D%22%231e2022%22%20letter-spacing%3D%22-1.5px%22%3E(%EC%A3%BC)%EC%95%84%ED%82%A4%ED%85%8D%3C%2Ftext%3E%3C%2Fsvg%3E" 
-               alt="(주)아키텍 로고" 
-               crossorigin="anonymous"
-               style="height: 35px; width: auto; max-width: 170px; display: block; object-fit: contain;" />
-        </div>
-      </div>
-
-      <!-- 고객 및 공사 정보 표 (시공기한 삭제, 시공지역 및 연락처 반영) -->
-      <div style="width: 100%; margin-bottom: 10px; box-sizing: border-box;">
-        <table style="width: 100%; border-collapse: collapse; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; border-left: 1px solid #cbd5e1; border-right: 0.5px solid #cbd5e1; box-sizing: border-box;">
-          <tbody>
-            <!-- 1. 회사명 -->
-            <tr>
-              <th class="pdf-th-text" style="width: 20%; background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: #0f172a;">회사명</th>
-              <td id="pdf-company-cell" class="pdf-td-text" style="width: 80%; background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #1e293b;"></td>
-            </tr>
-            <!-- 2. 고객명 -->
-            <tr>
-              <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: #0f172a;">고객명</th>
-              <td id="pdf-client" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #1e293b;"></td>
-            </tr>
-            <!-- 3. 시공지역 (고객명 아래 신설) -->
-            <tr>
-              <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: #0f172a;">시공지역</th>
-              <td id="pdf-location" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #1e293b;"></td>
-            </tr>
-            <!-- 4. 연락처 (시공지역 아래 배치) -->
-            <tr>
-              <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: #0f172a;">연락처</th>
-              <td id="pdf-contact" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #1e293b;"></td>
-            </tr>
-            <!-- 5. 견적일자 -->
-            <tr>
-              <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: #0f172a;">견적일자</th>
-              <td id="pdf-date-cell" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #1e293b;"></td>
-            </tr>
-            <!-- 6. 특이사항 및 비고 -->
-            <tr>
-              <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: #0f172a;">특이사항 및 비고</th>
-              <td id="pdf-notes" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12px; font-weight: 600; color: #1e293b; white-space: pre-line; line-height: 1.4;"></td>
-            </tr>
-            <!-- 7. 대금 조건 -->
-            <tr>
-              <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: #b91c1c;">대금 조건</th>
-              <td style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 11.5px; font-weight: 600; color: #1e293b; line-height: 1.4;">
-                <div>
-                  <span style="color: #0267c1; font-weight: 700;">[실속형]</span> 
-                  선급금(50%): <span id="pdf-advance-date-blue" style="font-size: 11.5px; font-weight: 600; color: #1e293b;"></span> <span id="pdf-advance-blue-text" style="font-size: 11.5px; font-weight: 600; color: #1e293b;">0원</span> &nbsp;|&nbsp; 
-                  잔금(50%): <span id="pdf-balance-date-blue" style="font-size: 11.5px; font-weight: 600; color: #1e293b;"></span> <span id="pdf-balance-blue-text" style="font-size: 11.5px; font-weight: 600; color: #1e293b;">0원</span>
-                </div>
-                <div style="margin-top: 1px;">
-                  <span style="color: #13773b; font-weight: 700;">[고급형]</span> 
-                  선급금(50%): <span id="pdf-advance-date-green" style="font-size: 11.5px; font-weight: 600; color: #1e293b;"></span> <span id="pdf-advance-green-text" style="font-size: 11.5px; font-weight: 600; color: #1e293b;">0원</span> &nbsp;|&nbsp; 
-                  잔금(50%): <span id="pdf-balance-date-green" style="font-size: 11.5px; font-weight: 600; color: #1e293b;"></span> <span id="pdf-balance-green-text" style="font-size: 11.5px; font-weight: 600; color: #1e293b;">0원</span>
-                </div>
-              </td>
-            </tr>
-            <!-- 8. 입금계좌 및 담당자 안내 (고정) -->
-            <tr>
-              <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: #0f172a;">입금계좌 / 담당자</th>
-              <td style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; padding: 5px 12px; font-size: 11.5px; font-weight: 600; color: #1e293b; line-height: 1.4;">
-                <div>
-                  <span style="font-weight: 700; color: #334155;">계좌번호:</span> 4560-12-233445[국민은행] / (주)아키텍
-                </div>
-                <div style="margin-top: 1px;">
-                  <span style="font-weight: 700; color: #334155;">담당자:</span> 고덕화 이사 &nbsp;|&nbsp; <span style="font-weight: 700; color: #334155;">연락처:</span> 010-3796-5731
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 실속형 / 고급형 견적 내역 2열 비교 테이블 -->
-      <div style="width: 100%; margin-bottom: 10px; box-sizing: border-box; display: flex; gap: 10px;">
-        <!-- PDF 실속형 테이블 -->
-        <div style="flex: 1; border: 1.5px solid #0267c1; border-radius: 8px; overflow: hidden; box-sizing: border-box;">
-          <div style="background-color: #0267c1; color: #ffffff; text-align: center; padding: 7px 4px; font-size: 14.5px; font-weight: 800; letter-spacing: 0.5px;">
-            실속형 견적 내역
+        <!-- PDF 헤더 -->
+        <div style="border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: flex-end; justify-content: space-between;">
+          <div>
+            <h1 class="pdf-title-text" style="font-size: 26px; font-weight: 900; color: #0f172a; margin: 0; letter-spacing: -0.5px; line-height: 1.15;">인테리어 견적서</h1>
+            <p class="pdf-sub-title-text" style="font-size: 14px; font-weight: 600; color: #475569; margin: 3px 0 0 0;">실속형 vs 고급형 비교 견적 요약</p>
           </div>
-          <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px; line-height: 1.35;">
-            <thead>
-              <tr style="background-color: #e9f2fa; color: #0f172a; font-weight: 700; border-bottom: 1px solid #b9d2eb;">
-                <th style="padding: 7px 3px; width: 34px; border-right: 1px solid #b9d2eb; vertical-align: middle; font-size: 12px;">NO</th>
-                <th style="padding: 7px 4px; width: 84px; border-right: 1px solid #b9d2eb; vertical-align: middle; font-size: 12px;">공사구분</th>
-                <th style="padding: 7px 5px; border-right: 1px solid #b9d2eb; vertical-align: middle; font-size: 12px;">선택 품목</th>
-                <th style="padding: 7px 3px; width: 44px; vertical-align: middle; font-size: 12px;">수량</th>
+          <div style="display: flex; align-items: center; justify-content: flex-end; flex-shrink: 0; padding-bottom: 2px;">
+            <img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20500%20108%22%20width%3D%22500%22%20height%3D%22108%22%3E%3Cpath%20d%3D%22M73%203%20L3%20105%20H32%20L49%2079%20H103%20L120%20105%20H149%20L97%203%20Z%22%20fill%3D%22%230066d6%22%2F%3E%3Cpath%20d%3D%22M85%2015%20L107%2070%20H67%20Z%22%20fill%3D%22%23ffffff%22%2F%3E%3Cpath%20d%3D%22M15%2091%20C%2058%2052%2C%20120%2050%2C%20175%2061%20C%20132%2068%2C%2068%2081%2C%2015%2091%20Z%22%20fill%3D%22%231e88e5%22%2F%3E%3Cpath%20d%3D%22M21%2083%20C%2064%2051%2C%20124%2052%2C%20168%2059%20C%20128%2064%2C%2072%2076%2C%2021%2083%20Z%22%20fill%3D%22%2342a5f5%22%20opacity%3D%220.85%22%2F%3E%3Ctext%20x%3D%22190%22%20y%3D%2282%22%20font-family%3D%22Pretendard%2C%20%27Noto%20Sans%20KR%27%2C%20%27Apple%20SD%20Gothic%20Neo%27%2C%20%27Malgun%20Gothic%27%2C%20sans-serif%22%20font-size%3D%2260%22%20font-weight%3D%22900%22%20fill%3D%22%231e2022%22%20letter-spacing%3D%22-1.5px%22%3E(%EC%A3%BC)%EC%95%84%ED%82%A4%ED%85%8D%3C%2Ftext%3E%3C%2Fsvg%3E" 
+                 alt="(주)아키텍 로고" 
+                 crossorigin="anonymous"
+                 style="height: 38px; width: auto; max-width: 175px; display: block; object-fit: contain;" />
+          </div>
+        </div>
+
+        <!-- 고객 및 공사 정보 표 (글씨 크기 확대 및 여백 최적화) -->
+        <div style="width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+          <table style="width: 100%; border-collapse: collapse; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; border-left: 1px solid #cbd5e1; border-right: 0.5px solid #cbd5e1; box-sizing: border-box;">
+            <tbody>
+              <!-- 1. 회사명 -->
+              <tr>
+                <th class="pdf-th-text" style="width: 19%; background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 700; color: #0f172a;">회사명</th>
+                <td id="pdf-company-cell" class="pdf-td-text" style="width: 81%; background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
               </tr>
-            </thead>
-            <tbody id="pdf-items-tbody-blue" style="background-color: #ffffff; color: #1e293b;">
-              <!-- 동적 생성 -->
+              <!-- 2. 고객명 -->
+              <tr>
+                <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 700; color: #0f172a;">고객명</th>
+                <td id="pdf-client" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
+              </tr>
+              <!-- 3. 시공지역 -->
+              <tr>
+                <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 700; color: #0f172a;">시공지역</th>
+                <td id="pdf-location" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
+              </tr>
+              <!-- 4. 연락처 -->
+              <tr>
+                <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 700; color: #0f172a;">연락처</th>
+                <td id="pdf-contact" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
+              </tr>
+              <!-- 5. 견적일자 -->
+              <tr>
+                <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 700; color: #0f172a;">견적일자</th>
+                <td id="pdf-date-cell" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b;"></td>
+              </tr>
+              <!-- 6. 특이사항 및 비고 -->
+              <tr>
+                <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 700; color: #0f172a;">특이사항 및 비고</th>
+                <td id="pdf-notes" class="pdf-td-text" style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 600; color: #1e293b; white-space: pre-line; line-height: 1.4;"></td>
+              </tr>
+              <!-- 7. 대금 조건 -->
+              <tr>
+                <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 800; color: #b91c1c;">대금 조건</th>
+                <td style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13px; font-weight: 600; color: #1e293b; line-height: 1.45;">
+                  <div>
+                    <span style="color: #0267c1; font-weight: 800;">[실속형]</span> 
+                    선급금(50%): <span id="pdf-advance-date-blue" style="font-size: 13px; font-weight: 700; color: #1e293b;"></span> <span id="pdf-advance-blue-text" style="font-size: 13px; font-weight: 700; color: #1e293b;">0원</span> &nbsp;|&nbsp; 
+                    잔금(50%): <span id="pdf-balance-date-blue" style="font-size: 13px; font-weight: 700; color: #1e293b;"></span> <span id="pdf-balance-blue-text" style="font-size: 13px; font-weight: 700; color: #1e293b;">0원</span>
+                  </div>
+                  <div style="margin-top: 1.5px;">
+                    <span style="color: #13773b; font-weight: 800;">[고급형]</span> 
+                    선급금(50%): <span id="pdf-advance-date-green" style="font-size: 13px; font-weight: 700; color: #1e293b;"></span> <span id="pdf-advance-green-text" style="font-size: 13px; font-weight: 700; color: #1e293b;">0원</span> &nbsp;|&nbsp; 
+                    잔금(50%): <span id="pdf-balance-date-green" style="font-size: 13px; font-weight: 700; color: #1e293b;"></span> <span id="pdf-balance-green-text" style="font-size: 13px; font-weight: 700; color: #1e293b;">0원</span>
+                  </div>
+                </td>
+              </tr>
+              <!-- 8. 입금계좌 및 담당자 안내 -->
+              <tr>
+                <th class="pdf-th-text" style="background-color: #f8fafc; border-right: 1px solid #cbd5e1; padding: 5px 12px; font-size: 13.5px; font-weight: 700; color: #0f172a;">입금계좌 / 담당자</th>
+                <td style="background-color: #ffffff; border-right: 0.5px solid #cbd5e1; padding: 5px 12px; font-size: 13px; font-weight: 600; color: #1e293b; line-height: 1.45;">
+                  <div>
+                    <span style="font-weight: 700; color: #334155;">계좌번호:</span> 4560-12-233445[국민은행] / (주)아키텍
+                  </div>
+                  <div style="margin-top: 1.5px;">
+                    <span style="font-weight: 700; color: #334155;">담당자:</span> 고덕화 이사 &nbsp;|&nbsp; <span style="font-weight: 700; color: #334155;">연락처:</span> 010-3796-5731
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
 
-        <!-- PDF 고급형 테이블 -->
-        <div style="flex: 1; border: 1.5px solid #13773b; border-radius: 8px; overflow: hidden; box-sizing: border-box;">
-          <div style="background-color: #13773b; color: #ffffff; text-align: center; padding: 7px 4px; font-size: 14.5px; font-weight: 800; letter-spacing: 0.5px;">
-            고급형 견적 내역
+        <!-- 실속형 / 고급형 견적 내역 2열 비교 테이블 -->
+        <div style="width: 100%; margin-bottom: 10px; box-sizing: border-box; display: flex; gap: 10px;">
+          <!-- PDF 실속형 테이블 -->
+          <div style="flex: 1; border: 1.5px solid #0267c1; border-radius: 8px; overflow: hidden; box-sizing: border-box;">
+            <div style="background-color: #0267c1; color: #ffffff; text-align: center; padding: 7px 4px; font-size: 15px; font-weight: 800; letter-spacing: 0.5px;">
+              실속형 견적 내역
+            </div>
+            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; line-height: 1.35;">
+              <thead>
+                <tr style="background-color: #e9f2fa; color: #0f172a; font-weight: 700; border-bottom: 1px solid #b9d2eb;">
+                  <th style="padding: 7px 3px; width: 34px; border-right: 1px solid #b9d2eb; vertical-align: middle; font-size: 13px;">NO</th>
+                  <th style="padding: 7px 4px; width: 84px; border-right: 1px solid #b9d2eb; vertical-align: middle; font-size: 13px;">공사구분</th>
+                  <th style="padding: 7px 5px; border-right: 1px solid #b9d2eb; vertical-align: middle; font-size: 13px;">선택 품목</th>
+                  <th style="padding: 7px 3px; width: 44px; vertical-align: middle; font-size: 13px;">수량</th>
+                </tr>
+              </thead>
+              <tbody id="pdf-items-tbody-blue" style="background-color: #ffffff; color: #1e293b;">
+                <!-- 동적 생성 -->
+              </tbody>
+            </table>
           </div>
-          <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px; line-height: 1.35;">
+
+          <!-- PDF 고급형 테이블 -->
+          <div style="flex: 1; border: 1.5px solid #13773b; border-radius: 8px; overflow: hidden; box-sizing: border-box;">
+            <div style="background-color: #13773b; color: #ffffff; text-align: center; padding: 7px 4px; font-size: 15px; font-weight: 800; letter-spacing: 0.5px;">
+              고급형 견적 내역
+            </div>
+            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; line-height: 1.35;">
+              <thead>
+                <tr style="background-color: #edf6f0; color: #0f172a; font-weight: 700; border-bottom: 1px solid #badbc5;">
+                  <th style="padding: 7px 3px; width: 34px; border-right: 1px solid #badbc5; vertical-align: middle; font-size: 13px;">NO</th>
+                  <th style="padding: 7px 4px; width: 84px; border-right: 1px solid #badbc5; vertical-align: middle; font-size: 13px;">공사구분</th>
+                  <th style="padding: 7px 5px; border-right: 1px solid #badbc5; vertical-align: middle; font-size: 13px;">선택 품목</th>
+                  <th style="padding: 7px 3px; width: 44px; vertical-align: middle; font-size: 13px;">수량</th>
+                </tr>
+              </thead>
+              <tbody id="pdf-items-tbody-green" style="background-color: #ffffff; color: #1e293b;">
+                <!-- 동적 생성 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 견적 총액 요약 표 -->
+        <div style="width: 100%; box-sizing: border-box;">
+          <table style="width: 100%; border-collapse: collapse; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; border-left: 1px solid #cbd5e1; border-right: 0.5px solid #cbd5e1; text-align: center; box-sizing: border-box;">
             <thead>
-              <tr style="background-color: #edf6f0; color: #0f172a; font-weight: 700; border-bottom: 1px solid #badbc5;">
-                <th style="padding: 7px 3px; width: 34px; border-right: 1px solid #badbc5; vertical-align: middle; font-size: 12px;">NO</th>
-                <th style="padding: 7px 4px; width: 84px; border-right: 1px solid #badbc5; vertical-align: middle; font-size: 12px;">공사구분</th>
-                <th style="padding: 7px 5px; border-right: 1px solid #badbc5; vertical-align: middle; font-size: 12px;">선택 품목</th>
-                <th style="padding: 7px 3px; width: 44px; vertical-align: middle; font-size: 12px;">수량</th>
+              <tr style="background-color: #0f172a; color: #ffffff;">
+                <th class="pdf-total-th-text" style="padding: 8px 10px; width: 50%; border-right: 1px solid #334155; font-size: 14.5px; font-weight: 800; letter-spacing: 0.5px;">실속형 선택 합계 (VAT 별도)</th>
+                <th class="pdf-total-th-text" style="padding: 8px 10px; width: 50%; border-right: 0.5px solid #cbd5e1; font-size: 14.5px; font-weight: 800; letter-spacing: 0.5px;">고급형 선택 합계 (VAT 별도)</th>
               </tr>
             </thead>
-            <tbody id="pdf-items-tbody-green" style="background-color: #ffffff; color: #1e293b;">
-              <!-- 동적 생성 -->
+            <tbody>
+              <tr>
+                <td id="pdf-total-blue" class="pdf-total-blue-amount" style="padding: 10px 12px; border-right: 1px solid #cbd5e1; color: #0267c1; background-color: #f8fbff; font-weight: 800; font-size: 21px; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', 'Segoe UI', Roboto, sans-serif;">0 원</td>
+                <td id="pdf-total-green" class="pdf-total-green-amount" style="padding: 10px 12px; border-right: 0.5px solid #cbd5e1; color: #13773b; background-color: #f6fbf8; font-weight: 800; font-size: 21px; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', 'Segoe UI', Roboto, sans-serif;">0 원</td>
+              </tr>
             </tbody>
           </table>
         </div>
-      </div>
 
-      <!-- 견적 총액 요약 표 -->
-      <div style="width: 100%; box-sizing: border-box;">
-        <table style="width: 100%; border-collapse: collapse; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; border-left: 1px solid #cbd5e1; border-right: 0.5px solid #cbd5e1; text-align: center; box-sizing: border-box;">
-          <thead>
-            <tr style="background-color: #0f172a; color: #ffffff;">
-              <th class="pdf-total-th-text" style="padding: 7px 10px; width: 50%; border-right: 1px solid #334155; font-size: 12.5px; font-weight: 700; letter-spacing: 0.5px;">실속형 선택 합계 (VAT 별도)</th>
-              <th class="pdf-total-th-text" style="padding: 7px 10px; width: 50%; border-right: 0.5px solid #cbd5e1; font-size: 12.5px; font-weight: 700; letter-spacing: 0.5px;">고급형 선택 합계 (VAT 별도)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td id="pdf-total-blue" class="pdf-total-blue-amount" style="padding: 10px 12px; border-right: 1px solid #cbd5e1; color: #0267c1; background-color: #f8fbff; font-weight: 700; font-size: 18px; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', 'Segoe UI', Roboto, sans-serif;">0 원</td>
-              <td id="pdf-total-green" class="pdf-total-green-amount" style="padding: 10px 12px; border-right: 0.5px solid #cbd5e1; color: #13773b; background-color: #f6fbf8; font-weight: 700; font-size: 18px; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', 'Segoe UI', Roboto, sans-serif;">0 원</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
-
     </div>
   </div>
 
@@ -1699,7 +1703,7 @@
       });
     }
 
-    // PDF 전용 선택 내역 테이블 바인딩 함수 (높이 및 글자 크기 확대)
+    // PDF 전용 선택 내역 테이블 바인딩 함수 (글씨 크기 확대: 13px)
     function renderPdfSelectedTables() {
       ['blue', 'green'].forEach(col => {
         const tbody = document.getElementById(`pdf-items-tbody-${col}`);
@@ -1723,8 +1727,8 @@
             let firstColsHtml = '';
             if (idx === 0) {
               firstColsHtml = `
-                <td rowspan="${rowSpan}" style="padding: 7px 3px; border-right: 1px solid ${borderColor}; border-bottom: 1px solid ${borderColor}; font-weight: 700; background-color: #f8fafc; vertical-align: middle; text-align: center; font-size: 12px;">${cat.no}</td>
-                <td rowspan="${rowSpan}" style="padding: 7px 5px; border-right: 1px solid ${borderColor}; border-bottom: 1px solid ${borderColor}; font-weight: 700; text-align: center; vertical-align: middle; line-height: 1.3; font-size: 12px; word-break: keep-all;">${escapeHtml(catTitle)}</td>
+                <td rowspan="${rowSpan}" style="padding: 6px 3px; border-right: 1px solid ${borderColor}; border-bottom: 1px solid ${borderColor}; font-weight: 700; background-color: #f8fafc; vertical-align: middle; text-align: center; font-size: 13px;">${cat.no}</td>
+                <td rowspan="${rowSpan}" style="padding: 6px 5px; border-right: 1px solid ${borderColor}; border-bottom: 1px solid ${borderColor}; font-weight: 700; text-align: center; vertical-align: middle; line-height: 1.35; font-size: 13px; word-break: keep-all;">${escapeHtml(catTitle)}</td>
               `;
             }
 
@@ -1733,8 +1737,8 @@
 
             tr.innerHTML = `
               ${firstColsHtml}
-              <td style="padding: 7px 6px; border-right: 1px solid ${borderColor}; border-bottom: 1px solid ${borderColor}; text-align: left; vertical-align: middle; font-weight: 500; line-height: 1.3; font-size: 12px;">${escapeHtml(displayName)}</td>
-              <td style="padding: 7px 3px; border-bottom: 1px solid ${borderColor}; font-weight: 700; text-align: center; vertical-align: middle; font-size: 12px;">${escapeHtml(currentQty || '1개')}</td>
+              <td style="padding: 6px 6px; border-right: 1px solid ${borderColor}; border-bottom: 1px solid ${borderColor}; text-align: left; vertical-align: middle; font-weight: 500; line-height: 1.35; font-size: 13px;">${escapeHtml(displayName)}</td>
+              <td style="padding: 6px 3px; border-bottom: 1px solid ${borderColor}; font-weight: 700; text-align: center; vertical-align: middle; font-size: 13px;">${escapeHtml(currentQty || '1개')}</td>
             `;
             tbody.appendChild(tr);
           });
@@ -1743,7 +1747,7 @@
         if (!hasAnyItem) {
           const emptyTr = document.createElement('tr');
           emptyTr.innerHTML = `
-            <td colspan="4" style="padding: 24px 8px; text-align: center; color: #94a3b8; font-size: 12px; vertical-align: middle;">
+            <td colspan="4" style="padding: 24px 8px; text-align: center; color: #94a3b8; font-size: 13px; vertical-align: middle;">
               선택된 내역 없음
             </td>
           `;
@@ -1822,7 +1826,7 @@
       dateEl.addEventListener('focus', openPicker);
     }
 
-    // PDF 생성 및 다운로드 실행 (완료 후 산출기 체크 해제 + 입력 폼 초기화 후 첫 화면으로 자동 복귀)
+    // PDF 생성 및 다운로드 실행 (태블릿/모바일 중앙 정렬 + 단일 1페이지 보장)
     quoteForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -1851,7 +1855,7 @@
       const dd = String(now.getDate()).padStart(2, '0');
       const todayDateStr = `${yyyy}-${mm}-${dd}`;
 
-      // PDF 템플릿에 데이터 바인딩 (시공지역 추가, 시공기한 삭제 반영)
+      // PDF 템플릿에 데이터 바인딩
       document.getElementById('pdf-company-cell').textContent = company;
       document.getElementById('pdf-client').textContent = client;
       document.getElementById('pdf-location').textContent = location || '미지정';
@@ -1859,7 +1863,7 @@
       document.getElementById('pdf-date-cell').textContent = date;
       document.getElementById('pdf-notes').textContent = notes || '특이사항 없음';
 
-      // PDF 대금 조건 바인딩 (날짜를 금액 앞에 같은 크기로 배치)
+      // PDF 대금 조건 바인딩
       document.getElementById('pdf-advance-date-blue').textContent = `(${selectedAdvanceDate})`;
       document.getElementById('pdf-balance-date-blue').textContent = `(${selectedBalanceDate})`;
       document.getElementById('pdf-advance-date-green').textContent = `(${selectedAdvanceDate})`;
@@ -1877,6 +1881,7 @@
       renderPdfSelectedTables();
 
       const fileName = `인테리어_견적서_${client || '고객'}_${todayDateStr}.pdf`;
+      const printContainer = document.getElementById('pdf-page-container');
       const printElement = document.getElementById('pdf-printable-area');
 
       const submitBtn = document.getElementById('btn-generate-pdf');
@@ -1884,42 +1889,41 @@
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span class="form-btn-text">PDF 파일 생성 중입니다...</span>';
 
-      // A4 1페이지 비율 자동 스케일 맞춤
-      const a4MaxHeightPx = 1070;
-      const currentHeight = printElement.offsetHeight;
+      // A4 1페이지 안전 영역 (1080px 내 완벽 1장 맞춤 및 중앙 정렬)
+      const a4MaxSafeHeight = 1070;
+      const actualHeight = printElement.offsetHeight;
 
       let appliedScale = 1;
-      if (currentHeight > a4MaxHeightPx) {
-        appliedScale = (a4MaxHeightPx / currentHeight) * 0.98;
-        printElement.style.transformOrigin = 'top left';
-        printElement.style.transform = `scale(${appliedScale})`;
-      } else {
-        printElement.style.transform = 'none';
+      if (actualHeight > a4MaxSafeHeight) {
+        appliedScale = (a4MaxSafeHeight / actualHeight) * 0.98;
       }
+      printElement.style.transformOrigin = 'top center';
+      printElement.style.transform = `scale(${appliedScale})`;
 
       const opt = {
-        margin: [5, 5, 5, 5],
+        margin: [0, 0, 0, 0], // 마진으로 인한 2페이지 밀림 방지
         filename: fileName,
-        image: { type: 'jpeg', quality: 1.0 },
+        image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
-          scale: 3, 
+          scale: 2.5, 
           useCORS: true, 
           letterRendering: true, 
           backgroundColor: '#ffffff', 
           scrollX: 0, 
           scrollY: 0,
-          dpi: 300
+          dpi: 300,
+          windowWidth: 794
         },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        jsPDF: { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ['px_scaling'] },
         pagebreak: { mode: ['avoid-all'] }
       };
 
       html2pdf()
         .set(opt)
-        .from(printElement)
+        .from(printContainer)
         .outputPdf('blob')
         .then((pdfBlob) => {
-          printElement.style.transform = 'none'; // 복원
+          printElement.style.transform = 'none'; // 스타일 원복
 
           const blobUrl = URL.createObjectURL(pdfBlob);
           const downloadLink = document.createElement('a');
@@ -1937,9 +1941,7 @@
           submitBtn.disabled = false;
           submitBtn.innerHTML = originBtnHtml;
 
-          // ========================================================
-          // 1. 인테리어 견적 산출기 실속형/고급형 선택 상태 초기화 (체크 해제)
-          // ========================================================
+          // 1. 인테리어 견적 산출기 선택 상태 초기화
           appState.blue.forEach(item => { item.selected = false; });
           appState.green.forEach(item => { item.selected = false; });
 
@@ -1958,9 +1960,7 @@
           document.getElementById('btn-select-all-blue').textContent = '실속형 전체선택';
           document.getElementById('btn-select-all-green').textContent = '고급형 전체선택';
 
-          // ========================================================
           // 2. 견적서 발행정보 입력 폼 및 수량 내역 초기화
-          // ========================================================
           quoteForm.reset();
           itemQuantities = {};
 
@@ -1974,11 +1974,10 @@
           document.getElementById('desc-balance-date-blue').textContent = '';
           document.getElementById('desc-balance-date-green').textContent = '';
 
-          // 폼 화면 내 선택 테이블 비우기
           document.getElementById('form-items-tbody-blue').innerHTML = '';
           document.getElementById('form-items-tbody-green').innerHTML = '';
 
-          // PDF 다운로드 완료 후 입력 페이지를 닫고 첫 화면으로 자동 복귀
+          // 3. 입력 페이지 닫고 첫 화면으로 자동 복귀
           viewSave.classList.add('hidden');
           viewCalc.classList.remove('hidden');
           calculateTotals();
