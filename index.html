@@ -972,11 +972,11 @@
   <!-- ========================================================
        3. PDF 변환 전용 템플릿 (A4 정밀 중앙 정렬 & 1페이지 완결형 구조)
        ======================================================== -->
-  <div style="position: absolute; left: -9999px; top: -9999px;">
-    <!-- A4 규격(210mm x 297mm @ 96dpi ≈ 794px x 1122px) 컨테이너 -->
-    <div id="pdf-page-container" style="width: 794px; min-height: 1120px; max-height: 1120px; background: #ffffff; padding: 24px 20px 20px 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow: hidden;">
+  <div style="position: fixed; left: 0; top: 0; width: 0; height: 0; overflow: hidden; pointer-events: none; z-index: -9999;">
+    <!-- A4 규격(210mm x 297mm @ 96dpi = 794px x 1123px) 1:1 완벽 중앙 정렬 컨테이너 -->
+    <div id="pdf-page-container" style="width: 794px; min-width: 794px; max-width: 794px; height: 1123px; min-height: 1123px; max-height: 1123px; background: #ffffff; padding: 28px 24px 24px 24px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; margin: 0 auto; overflow: hidden;">
       
-      <div id="pdf-printable-area" style="width: 754px; max-width: 754px; margin: 0 auto; background: #ffffff; color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif; box-sizing: border-box;">
+      <div id="pdf-printable-area" style="width: 746px; min-width: 746px; max-width: 746px; margin: 0 auto; background: #ffffff; color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Apple SD Gothic Neo', sans-serif; box-sizing: border-box;">
 
         <!-- PDF 헤더 -->
         <div style="border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 10px; display: flex; align-items: flex-end; justify-content: space-between;">
@@ -1826,7 +1826,7 @@
       dateEl.addEventListener('focus', openPicker);
     }
 
-    // PDF 생성 및 다운로드 실행 (태블릿/모바일 중앙 정렬 + 단일 1페이지 보장)
+    // PDF 생성 및 다운로드 실행 (완벽 중앙 정렬 & 여백 쏠림/잘림 차단 & 2번째 페이지 자동 삭제)
     quoteForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -1889,8 +1889,8 @@
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span class="form-btn-text">PDF 파일 생성 중입니다...</span>';
 
-      // A4 1페이지 안전 영역 (1080px 내 완벽 1장 맞춤 및 중앙 정렬)
-      const a4MaxSafeHeight = 1070;
+      // A4 1페이지 안전 영역 (1060px 내 완벽 1장 맞춤 및 상단 중앙 정렬)
+      const a4MaxSafeHeight = 1060;
       const actualHeight = printElement.offsetHeight;
 
       let appliedScale = 1;
@@ -1901,26 +1901,37 @@
       printElement.style.transform = `scale(${appliedScale})`;
 
       const opt = {
-        margin: [0, 0, 0, 0], // 마진으로 인한 2페이지 밀림 방지
+        margin: 0,
         filename: fileName,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
-          scale: 2.5, 
+          scale: 2, 
           useCORS: true, 
           letterRendering: true, 
           backgroundColor: '#ffffff', 
           scrollX: 0, 
-          scrollY: 0,
-          dpi: 300,
-          windowWidth: 794
+          scrollY: 0, 
+          x: 0, 
+          y: 0, 
+          width: 794, 
+          windowWidth: 794 
         },
-        jsPDF: { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ['px_scaling'] },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: { mode: ['avoid-all'] }
       };
 
       html2pdf()
         .set(opt)
         .from(printContainer)
+        .toPdf()
+        .get('pdf')
+        .then((pdf) => {
+          // 2번째 이후 빈 페이지가 생성되었을 경우 강제 삭제하여 1페이지만 유지
+          const totalPages = pdf.internal.getNumberOfPages();
+          for (let p = totalPages; p > 1; p--) {
+            pdf.deletePage(p);
+          }
+        })
         .outputPdf('blob')
         .then((pdfBlob) => {
           printElement.style.transform = 'none'; // 스타일 원복
