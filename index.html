@@ -2032,60 +2032,104 @@
       calculateTotals();
     });
 
-    /* [태블릿 절전/화면 OFF 후 복귀 대응]
-       Android 브라우저가 백그라운드 탭을 복원할 때 Tailwind CDN 스타일이
-       늦게/누락되어 레이아웃이 깨지는 경우에만 Tailwind를 다시 로드합니다.
-       기존 화면/데이터/기능은 변경하지 않습니다. */
+    /* [태블릿 절전/화면 OFF 후 복귀 대응 - 강화]
+       기존 디자인/기능은 그대로 두고, Android 태블릿이 수 시간~하루 절전 후
+       복귀할 때 Tailwind 런타임 스타일이 유실되는 경우만 자동 복구합니다. */
     (function setupTabletResumeStyleRecovery() {
       let recoveringTailwind = false;
-      let lastRecoveryAt = 0;
+      let recoveryToken = 0;
 
       function isTailwindReady() {
+        if (!document.body) return false;
         const probe = document.createElement('div');
         probe.className = 'fixed flex bg-white w-full';
-        probe.style.cssText = 'visibility:hidden;pointer-events:none;';
+        probe.style.cssText = 'visibility:hidden;pointer-events:none;position:absolute;left:-99999px;top:-99999px;';
         document.body.appendChild(probe);
         const style = window.getComputedStyle(probe);
-        const ok = style.position === 'fixed' && style.display === 'flex' && style.width === document.documentElement.clientWidth + 'px';
+        const ok = style.display === 'flex' && style.backgroundColor === 'rgb(255, 255, 255)';
         probe.remove();
         return ok;
       }
 
-      function recoverTailwindIfNeeded() {
-        if (document.visibilityState === 'hidden' || isTailwindReady()) return;
-        const now = Date.now();
-        if (recoveringTailwind || now - lastRecoveryAt < 3000) return;
+      function forceLayoutRefresh() {
+        void document.documentElement.offsetHeight;
+        window.dispatchEvent(new Event('resize'));
+        if (window.visualViewport) {
+          window.visualViewport.dispatchEvent(new Event('resize'));
+        }
+      }
 
+      function loadTailwindAgain(done) {
+        if (recoveringTailwind) return;
         recoveringTailwind = true;
-        lastRecoveryAt = now;
+
+        const oldResumeScripts = document.querySelectorAll('script[data-tablet-tailwind-recovery="1"]');
+        oldResumeScripts.forEach(el => el.remove());
 
         const script = document.createElement('script');
-        script.src = 'https://cdn.tailwindcss.com?resume=' + now;
+        script.dataset.tabletTailwindRecovery = '1';
+        script.src = 'https://cdn.tailwindcss.com?tablet-resume=' + Date.now();
         script.onload = function () {
           recoveringTailwind = false;
-          requestAnimationFrame(function () {
-            window.dispatchEvent(new Event('resize'));
-          });
+          forceLayoutRefresh();
+          setTimeout(function () {
+            forceLayoutRefresh();
+            if (typeof done === 'function') done(isTailwindReady());
+          }, 120);
         };
         script.onerror = function () {
           recoveringTailwind = false;
+          if (typeof done === 'function') done(false);
         };
         document.head.appendChild(script);
       }
 
+      function recoverAfterResume() {
+        if (document.visibilityState === 'hidden') return;
+        const myToken = ++recoveryToken;
+
+        // 브라우저가 복귀 직후 스타일을 다시 붙이는 시간을 먼저 줍니다.
+        setTimeout(function () {
+          if (myToken !== recoveryToken || document.visibilityState === 'hidden') return;
+
+          if (isTailwindReady()) {
+            forceLayoutRefresh();
+            return;
+          }
+
+          loadTailwindAgain(function (ok) {
+            if (myToken !== recoveryToken) return;
+            if (ok) {
+              forceLayoutRefresh();
+              return;
+            }
+
+            // 첫 재로딩이 실패한 경우 한 번 더 재시도합니다.
+            setTimeout(function () {
+              if (myToken !== recoveryToken || document.visibilityState === 'hidden') return;
+              if (isTailwindReady()) {
+                forceLayoutRefresh();
+                return;
+              }
+              loadTailwindAgain(function () {
+                forceLayoutRefresh();
+              });
+            }, 900);
+          });
+        }, 180);
+      }
+
       document.addEventListener('visibilitychange', function () {
-        if (document.visibilityState === 'visible') {
-          setTimeout(recoverTailwindIfNeeded, 80);
-          setTimeout(recoverTailwindIfNeeded, 700);
-        }
+        if (document.visibilityState === 'visible') recoverAfterResume();
       });
 
-      window.addEventListener('pageshow', function () {
-        setTimeout(recoverTailwindIfNeeded, 80);
-      });
+      window.addEventListener('pageshow', recoverAfterResume);
+      window.addEventListener('focus', recoverAfterResume);
 
-      window.addEventListener('focus', function () {
-        setTimeout(recoverTailwindIfNeeded, 80);
+      // 화면 회전/분할화면 복귀 때도 레이아웃만 다시 계산합니다.
+      window.addEventListener('orientationchange', function () {
+        setTimeout(forceLayoutRefresh, 120);
+        setTimeout(forceLayoutRefresh, 500);
       });
     })();
   </script>
