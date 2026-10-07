@@ -200,6 +200,11 @@
       font-weight: 500 !important;
       color: #1e293b !important;
       line-height: 1.3 !important;
+      display: block !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
     }
 
     /* 10. 체크(선택)되었을 때 실속형 컬럼 내 품목 텍스트 */
@@ -270,6 +275,7 @@
     .total-amount-number-blue {
       font-size: 19px !important;
       font-weight: 700 !important;
+
       letter-spacing: -0.5px !important;
       color: #ffffff !important;
     }
@@ -587,6 +593,10 @@
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
+      width: 32px !important;
+      min-width: 32px !important;
+      max-width: 40px !important;
+      flex: 0 0 32px !important;
     }
 
     .drop-slot-area {
@@ -626,6 +636,415 @@
         width: 50% !important;
         min-width: 0 !important;
         max-width: 50% !important;
+      }
+    }
+
+    /* 절전으로 Tailwind 스타일이 빠져도 견적 화면 골격은 유지 */
+    .hidden {
+      display: none !important;
+    }
+
+    svg {
+      max-width: 24px;
+      max-height: 24px;
+      flex-shrink: 0;
+    }
+
+    #view-calculator {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #view-calculator > header {
+      width: 100%;
+      background-color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 8px 10px;
+    }
+
+    #view-calculator > header > div {
+      width: 100%;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    #view-calculator > header > div > div:first-child {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      align-self: flex-start;
+    }
+
+    #view-calculator > header > div > div:last-child {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      width: 100%;
+    }
+
+    #view-calculator > main {
+      width: 100%;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #boards-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .board-column {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      background-color: #ffffff;
+      border-radius: 12px;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+      box-sizing: border-box;
+      opacity: 1 !important;
+    }
+
+    #board-blue.board-column {
+      border: 1px solid #0267c1;
+    }
+
+    #board-green.board-column {
+      border: 1px solid #13773b;
+    }
+
+    #board-blue > div:first-child {
+      background-color: #0267c1 !important;
+      text-align: center !important;
+      padding: 8px !important;
+    }
+
+    #board-green > div:first-child {
+      background-color: #13773b !important;
+      text-align: center !important;
+      padding: 8px !important;
+    }
+
+    #board-blue > div:nth-child(2) {
+      display: flex !important;
+      align-items: stretch !important;
+      background-color: #e9f2fa !important;
+      border-bottom: 1px solid #b9d2eb !important;
+    }
+
+    #board-green > div:nth-child(2) {
+      display: flex !important;
+      align-items: stretch !important;
+      background-color: #edf6f0 !important;
+      border-bottom: 1px solid #badbc5 !important;
+    }
+
+    #board-blue > div:nth-child(2) > div:last-child,
+    #board-green > div:nth-child(2) > div:last-child {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    #board-blue > div:nth-child(2) > .col-no-cell {
+      border-right: 1px solid #b9d2eb;
+      background-color: transparent;
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+
+    #board-green > div:nth-child(2) > .col-no-cell {
+      border-right: 1px solid #badbc5;
+      background-color: transparent;
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+
+    #board-blue > div:nth-child(2) > div:last-child,
+    #board-green > div:nth-child(2) > div:last-child {
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+
+    #list-wrapper-blue .col-no-cell {
+      border-right: 1px solid #b9d2eb;
+      background-color: #f7faff;
+    }
+
+    #list-wrapper-green .col-no-cell {
+      border-right: 1px solid #badbc5;
+      background-color: #f8fbf9;
+    }
+
+    #list-wrapper-blue,
+    #list-wrapper-green {
+      flex: 1 1 auto;
+      background-color: #ffffff;
+      min-width: 0;
+    }
+
+    #list-wrapper-blue > .item-row-container + .item-row-container {
+      border-top: 1px solid #b9d2eb;
+    }
+
+    #list-wrapper-green > .item-row-container + .item-row-container {
+      border-top: 1px solid #badbc5;
+    }
+
+    .item-row-container {
+      min-height: 64px;
+      min-width: 0;
+    }
+
+    .item-row-container > div:last-child {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      padding: 4px !important;
+    }
+
+    .item-row-container > div:last-child > div:first-child {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    .drop-slot-area {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 2px !important;
+      min-width: 0;
+    }
+
+    .box-item-card {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 4px !important;
+      border-radius: 6px !important;
+      padding: 4px 6px !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    #board-blue .box-item-card {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+    }
+
+    #board-green .box-item-card {
+      background-color: #ffffff;
+      border: 1px solid #badbc5;
+    }
+
+    #board-blue .box-item-card.bg-blueBoard-active {
+      background-color: #eaf4fd !important;
+      border-color: #0267c1 !important;
+      box-shadow: 0 0 0 1px #0267c1;
+    }
+
+    #board-green .box-item-card.bg-greenBoard-active {
+      background-color: #eef8f2 !important;
+      border-color: #13773b !important;
+      box-shadow: 0 0 0 1px #13773b;
+    }
+
+    .box-item-card > div:nth-child(2) {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      padding-left: 2px;
+      padding-right: 2px;
+    }
+
+    .badge-container {
+      flex-shrink: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    .btn-check-toggle {
+      width: 12px !important;
+      height: 12px !important;
+      min-width: 12px !important;
+      border-radius: 9999px !important;
+      border-style: solid;
+      border-width: 1px;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex-shrink: 0 !important;
+      padding: 0 !important;
+      box-sizing: border-box;
+      background-color: #ffffff;
+    }
+
+    #board-blue .btn-check-toggle {
+      border-color: #cbd5e1;
+    }
+
+    #board-green .btn-check-toggle {
+      border-color: #badbc5;
+    }
+
+    .btn-check-toggle.bg-blueBoard-main {
+      background-color: #0267c1 !important;
+      border-color: #0267c1 !important;
+      color: #ffffff !important;
+    }
+
+    .btn-check-toggle.bg-greenBoard-main {
+      background-color: #13773b !important;
+      border-color: #13773b !important;
+      color: #ffffff !important;
+    }
+
+    .btn-check-toggle svg {
+      width: 8px !important;
+      height: 8px !important;
+      max-width: 8px !important;
+      max-height: 8px !important;
+      display: block !important;
+    }
+
+    #board-blue > div:nth-child(4) {
+      background-color: #0267c1 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 8px 10px !important;
+      border-top: 1px solid #1e40af !important;
+    }
+
+    #board-green > div:nth-child(4) {
+      background-color: #13773b !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 8px 10px !important;
+      border-top: 1px solid #166534 !important;
+    }
+
+    #board-blue > div:nth-child(4) > div,
+    #board-green > div:nth-child(4) > div {
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    #board-blue > div:nth-child(5) {
+      padding: 6px;
+      background-color: #f8fbff;
+      border-top: 1px solid #b9d2eb;
+    }
+
+    #board-green > div:nth-child(5) {
+      padding: 6px;
+      background-color: #f6fbf8;
+      border-top: 1px solid #badbc5;
+    }
+
+    #board-blue > div:nth-child(5) > div,
+    #board-green > div:nth-child(5) > div {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    #board-blue > div:nth-child(5) > div {
+      border: 1px solid #b9d2eb;
+    }
+
+    #board-green > div:nth-child(5) > div {
+      border: 1px solid #badbc5;
+    }
+
+    @media (min-width: 640px) {
+      .col-no-cell {
+        width: 40px !important;
+        min-width: 40px !important;
+        flex: 0 0 40px !important;
+      }
+
+      .item-row-container {
+        min-height: 68px;
+      }
+
+      .item-row-container > div:last-child {
+        padding: 6px !important;
+      }
+
+      #board-blue > div:first-child,
+      #board-green > div:first-child {
+        padding: 10px 8px !important;
+      }
+
+      #board-blue > div:nth-child(4),
+      #board-green > div:nth-child(4) {
+        padding: 10px 16px !important;
+      }
+
+      #board-blue > div:nth-child(4) > div,
+      #board-green > div:nth-child(4) > div {
+        gap: 4px;
+      }
+
+      #board-blue > div:nth-child(5),
+      #board-green > div:nth-child(5) {
+        padding: 8px !important;
+      }
+
+      .btn-check-toggle {
+        width: 14px !important;
+        height: 14px !important;
+        min-width: 14px !important;
+      }
+
+      #view-calculator > header {
+        padding: 10px 16px;
+      }
+
+      #view-calculator > header > div {
+        flex-direction: row;
+      }
+
+      #view-calculator > header > div > div:first-child {
+        align-self: center;
+      }
+
+      #view-calculator > header > div > div:last-child {
+        width: auto;
+        gap: 6px;
       }
     }
 
@@ -1931,6 +2350,7 @@
           useCORS: true, 
           letterRendering: true, 
           backgroundColor: '#ffffff', 
+
           scrollX: 0, 
           scrollY: 0, 
           x: 0, 
@@ -2032,53 +2452,100 @@
       calculateTotals();
     });
 
-    /* [태블릿 절전/화면 OFF 후 복귀 대응 - 강화]
-       기존 디자인/기능은 그대로 두고, Android 태블릿이 수 시간~하루 절전 후
-       복귀할 때 Tailwind 런타임 스타일이 유실되는 경우만 자동 복구합니다. */
+    /* [태블릿 화면 OFF 후 복귀]
+       수 시간~하루 절전으로 Tailwind 스타일이나 화면 합성이 빠져도
+       견적 화면 색/칸은 유지하고, 깨진 그리기만 다시 붙입니다. */
     (function setupTabletResumeStyleRecovery() {
       let recoveringTailwind = false;
       let recoveryToken = 0;
+      let lastRecoverAt = 0;
+      let lastTick = Date.now();
 
       function isTailwindReady() {
         if (!document.body) return false;
         const probe = document.createElement('div');
-        probe.className = 'fixed flex bg-white w-full';
-        probe.style.cssText = 'visibility:hidden;pointer-events:none;position:absolute;left:-99999px;top:-99999px;';
+        probe.className = 'bg-blueBoard-main';
+        probe.style.cssText = 'position:absolute;left:-99999px;top:-99999px;width:4px;height:4px;pointer-events:none;';
         document.body.appendChild(probe);
-        const style = window.getComputedStyle(probe);
-        const ok = style.display === 'flex' && style.backgroundColor === 'rgb(255, 255, 255)';
+        const bg = window.getComputedStyle(probe).backgroundColor.replace(/\s/g, '');
         probe.remove();
-        return ok;
+        return bg === 'rgb(2,103,193)';
+      }
+
+      function lockBoardChrome() {
+        const pairs = [
+          ['#board-blue > div:first-child', '#0267c1'],
+          ['#board-green > div:first-child', '#13773b'],
+          ['#board-blue > div:nth-child(4)', '#0267c1'],
+          ['#board-green > div:nth-child(4)', '#13773b']
+        ];
+        pairs.forEach(function (pair) {
+          const el = document.querySelector(pair[0]);
+          if (!el) return;
+          el.style.setProperty('background-color', pair[1], 'important');
+        });
+      }
+
+      function clearStuckDragLayers() {
+        document.querySelectorAll('.sortable-drag, .sortable-ghost, .sortable-chosen').forEach(function (el) {
+          el.classList.remove('sortable-drag', 'sortable-ghost', 'sortable-chosen');
+          el.style.transform = '';
+          el.style.opacity = '';
+        });
+      }
+
+      function reinforceViewport() {
+        const meta = document.querySelector('meta[name="viewport"]');
+        if (!meta) return;
+        const content = meta.getAttribute('content');
+        if (content) meta.setAttribute('content', content);
       }
 
       function forceLayoutRefresh() {
-        void document.documentElement.offsetHeight;
+        const root = document.documentElement;
+        const prev = root.style.display;
+        root.style.display = 'none';
+        void root.offsetHeight;
+        root.style.display = prev;
         window.dispatchEvent(new Event('resize'));
         if (window.visualViewport) {
           window.visualViewport.dispatchEvent(new Event('resize'));
         }
       }
 
+      function removeInjectedTailwindStyles() {
+        document.querySelectorAll('style').forEach(function (el) {
+          const text = el.textContent || '';
+          if (text.indexOf('--tw-') !== -1) el.remove();
+        });
+      }
+
       function loadTailwindAgain(done) {
         if (recoveringTailwind) return;
         recoveringTailwind = true;
+        removeInjectedTailwindStyles();
 
-        const oldResumeScripts = document.querySelectorAll('script[data-tablet-tailwind-recovery="1"]');
-        oldResumeScripts.forEach(el => el.remove());
+        document.querySelectorAll('script[data-tablet-tailwind-recovery="1"]').forEach(function (el) {
+          el.remove();
+        });
 
         const script = document.createElement('script');
         script.dataset.tabletTailwindRecovery = '1';
         script.src = 'https://cdn.tailwindcss.com?tablet-resume=' + Date.now();
         script.onload = function () {
           recoveringTailwind = false;
+          lockBoardChrome();
           forceLayoutRefresh();
           setTimeout(function () {
+            lockBoardChrome();
             forceLayoutRefresh();
             if (typeof done === 'function') done(isTailwindReady());
           }, 120);
         };
         script.onerror = function () {
           recoveringTailwind = false;
+          lockBoardChrome();
+          forceLayoutRefresh();
           if (typeof done === 'function') done(false);
         };
         document.head.appendChild(script);
@@ -2086,34 +2553,30 @@
 
       function recoverAfterResume() {
         if (document.visibilityState === 'hidden') return;
+        const now = Date.now();
+        if (now - lastRecoverAt < 1200) return;
+        lastRecoverAt = now;
         const myToken = ++recoveryToken;
 
-        // 브라우저가 복귀 직후 스타일을 다시 붙이는 시간을 먼저 줍니다.
+        lockBoardChrome();
+        clearStuckDragLayers();
+        reinforceViewport();
+        forceLayoutRefresh();
+
         setTimeout(function () {
           if (myToken !== recoveryToken || document.visibilityState === 'hidden') return;
-
+          lockBoardChrome();
           if (isTailwindReady()) {
             forceLayoutRefresh();
             return;
           }
-
           loadTailwindAgain(function (ok) {
             if (myToken !== recoveryToken) return;
-            if (ok) {
-              forceLayoutRefresh();
-              return;
-            }
-
-            // 첫 재로딩이 실패한 경우 한 번 더 재시도합니다.
+            if (ok) return;
             setTimeout(function () {
               if (myToken !== recoveryToken || document.visibilityState === 'hidden') return;
-              if (isTailwindReady()) {
-                forceLayoutRefresh();
-                return;
-              }
-              loadTailwindAgain(function () {
-                forceLayoutRefresh();
-              });
+              if (!isTailwindReady()) loadTailwindAgain();
+              else forceLayoutRefresh();
             }, 900);
           });
         }, 180);
@@ -2122,15 +2585,21 @@
       document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'visible') recoverAfterResume();
       });
-
+      document.addEventListener('resume', recoverAfterResume);
       window.addEventListener('pageshow', recoverAfterResume);
       window.addEventListener('focus', recoverAfterResume);
-
-      // 화면 회전/분할화면 복귀 때도 레이아웃만 다시 계산합니다.
       window.addEventListener('orientationchange', function () {
-        setTimeout(forceLayoutRefresh, 120);
-        setTimeout(forceLayoutRefresh, 500);
+        setTimeout(recoverAfterResume, 120);
       });
+
+      /* 화면이 꺼진 동안 멈춘 시계가 다시 돌면, 이벤트가 없어도 복구 */
+      setInterval(function () {
+        const now = Date.now();
+        if (now - lastTick > 15000) recoverAfterResume();
+        lastTick = Date.now();
+      }, 4000);
+
+      lockBoardChrome();
     })();
   </script>
 </body>
