@@ -4,12 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>인테리어 견적 산출기</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- SortableJS: Drag and Drop Library -->
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
-  <!-- html2pdf.js: PDF Generation Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    (function () {
+      try {
+        var css = localStorage.getItem('quote-tailwind-cache');
+        if (!css || css.indexOf('--tw-') === -1) return;
+        var el = document.createElement('style');
+        el.id = 'quote-tailwind-cache';
+        el.textContent = css;
+        document.head.appendChild(el);
+      } catch (e) {}
+    })();
+  </script>
+  <!-- 인터넷이 없어도 화면이 먼저 그려지도록 CDN 스크립트는 렌더를 막지 않습니다. -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
 
   <script>
     tailwind.config = {
@@ -275,7 +285,6 @@
     .total-amount-number-blue {
       font-size: 19px !important;
       font-weight: 700 !important;
-
 
 
       letter-spacing: -0.5px !important;
@@ -1051,6 +1060,222 @@
       }
     }
 
+    /* 견적서 입력 화면: Tailwind가 빠져도 칸이 겹치지 않게 고정 */
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    #view-save-form {
+      width: 100%;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 16px 12px;
+      box-sizing: border-box;
+    }
+
+    #view-save-form > div {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    #view-save-form > div > div:first-child {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 12px;
+      padding: 16px 20px !important;
+      background: linear-gradient(to right, #0f172a, #1e293b, #0f172a) !important;
+      color: #ffffff !important;
+    }
+
+    #view-save-form > div > div:first-child > div:first-child {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    #btn-back-to-calc {
+      background-color: #334155;
+      color: #e2e8f0;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 10px;
+      flex-shrink: 0;
+    }
+
+    #view-save-form > div > div:nth-child(2) {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 8px;
+      background-color: #f8fafc !important;
+      padding: 12px !important;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    #view-save-form > div > div:nth-child(2) > div {
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    #view-save-form > div > div:nth-child(2) > div:first-child {
+      background-color: rgba(239, 246, 255, 0.7);
+      border: 1px solid rgba(191, 219, 254, 0.8);
+    }
+
+    #view-save-form > div > div:nth-child(2) > div:last-child {
+      background-color: rgba(236, 253, 245, 0.7);
+      border: 1px solid rgba(167, 243, 208, 0.8);
+    }
+
+    #quote-info-form {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px;
+      padding: 16px !important;
+    }
+
+    #quote-info-form > div {
+      display: block !important;
+      width: 100% !important;
+      position: static !important;
+      clear: both !important;
+    }
+
+    #quote-info-form input:not(.sr-only),
+    #quote-info-form textarea {
+      display: block !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box;
+      margin: 0 !important;
+      position: static !important;
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+
+    #input-date {
+      padding: 10px 14px;
+      border-radius: 6px;
+    }
+
+    #quote-info-form > div:nth-child(7) > div {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    #quote-info-form > div:nth-child(7) > div > div {
+      border: 2px solid #0267c1;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #ffffff;
+    }
+
+    #quote-info-form > div:nth-child(7) > div > div:last-child {
+      border-color: #13773b;
+    }
+
+    #quote-info-form > div:nth-child(7) > div > div:first-child > div:first-child,
+    #quote-info-form > div:nth-child(7) > div > div:last-child > div:first-child {
+      color: #ffffff;
+      text-align: center;
+      padding: 8px 12px;
+      font-weight: 700;
+    }
+
+    #quote-info-form > div:nth-child(7) > div > div:first-child > div:first-child {
+      background-color: #0267c1;
+    }
+
+    #quote-info-form > div:nth-child(7) > div > div:last-child > div:first-child {
+      background-color: #13773b;
+    }
+
+    #view-save-form table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    #view-save-form th,
+    #view-save-form td {
+      padding: 8px 6px;
+      vertical-align: middle;
+    }
+
+    #quote-info-form .input-item-qty {
+      width: 100%;
+      padding: 4px 6px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    #quote-info-form > div:nth-child(8) > div:first-child {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    #quote-info-form > div:nth-child(8) > div:first-child > div > div:first-child {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    #quote-info-form > div:nth-child(8) > p {
+      color: #dc2626;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    #btn-generate-pdf {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: #0f172a;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    @media (min-width: 640px) {
+      #view-save-form {
+        padding: 16px;
+      }
+
+      #quote-info-form {
+        padding: 24px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      #quote-info-form > div:nth-child(7) > div {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
     #boards-container::-webkit-scrollbar {
       height: 4px;
     }
@@ -1772,6 +1997,7 @@
     }
 
     function initializeSortables() {
+      if (typeof Sortable === 'undefined') return;
       document.querySelectorAll('.drop-slot-area').forEach(slot => {
         new Sortable(slot, {
           group: 'quote-shared-group',
@@ -2513,6 +2739,38 @@
         return bg === 'rgb(2,103,193)';
       }
 
+      function restoreCachedTailwind() {
+        let css = '';
+        try { css = localStorage.getItem('quote-tailwind-cache') || ''; } catch (e) { return; }
+        if (!css || css.indexOf('--tw-') === -1) return;
+        let el = document.getElementById('quote-tailwind-cache');
+        if (!el) {
+          el = document.createElement('style');
+          el.id = 'quote-tailwind-cache';
+          document.head.appendChild(el);
+        }
+        if (el.textContent !== css) el.textContent = css;
+      }
+
+      function cacheTailwindCss() {
+        let best = '';
+        document.querySelectorAll('style').forEach(function (el) {
+          if (el.id === 'quote-tailwind-cache') return;
+          const text = el.textContent || '';
+          if (text.indexOf('--tw-') !== -1 && text.length > best.length) best = text;
+        });
+        if (best.length < 500) return;
+        try { localStorage.setItem('quote-tailwind-cache', best); } catch (e) {}
+      }
+
+      function reparseDocumentStyles() {
+        document.querySelectorAll('style').forEach(function (el) {
+          const text = el.textContent;
+          if (!text) return;
+          el.textContent = text;
+        });
+      }
+
       function lockBoardChrome() {
         const pairs = [
           ['#board-blue > div:first-child', '#0267c1'],
@@ -2624,6 +2882,8 @@
         lastRecoverAt = now;
         const myToken = ++recoveryToken;
 
+        restoreCachedTailwind();
+        reparseDocumentStyles();
         lockBoardChrome();
         clearStuckDragLayers();
         reinforceViewport();
@@ -2631,28 +2891,46 @@
 
         setTimeout(function () {
           if (myToken !== recoveryToken || document.visibilityState === 'hidden') return;
+          restoreCachedTailwind();
+          reparseDocumentStyles();
           lockBoardChrome();
-          const blueBar = document.querySelector('#board-blue > div:first-child');
-          const bg = blueBar ? window.getComputedStyle(blueBar).backgroundColor.replace(/\s/g, '') : '';
-          if (bg && bg !== 'rgb(2,103,193)') {
-            reloadForCleanPaint();
-            return;
-          }
           if (isTailwindReady()) {
+            cacheTailwindCss();
             forceLayoutRefresh();
             return;
           }
           loadTailwindAgain(function () {
+            cacheTailwindCss();
             lockBoardChrome();
             forceLayoutRefresh();
           });
         }, 180);
       }
 
+      function screenStylesOk() {
+        const blueBar = document.querySelector('#board-blue > div:first-child');
+        if (blueBar) {
+          const bg = window.getComputedStyle(blueBar).backgroundColor.replace(/\s/g, '');
+          if (bg !== 'rgb(2,103,193)') return false;
+        }
+        const form = document.getElementById('view-save-form');
+        if (form && !form.classList.contains('hidden')) {
+          const head = form.querySelector(':scope > div > div');
+          if (head) {
+            const image = window.getComputedStyle(head).backgroundImage || '';
+            if (image.indexOf('gradient') === -1) return false;
+          }
+        }
+        return true;
+      }
+
       function onWake() {
         const gap = hiddenAt ? Date.now() - hiddenAt : 0;
         hiddenAt = 0;
-        if (gap >= LONG_SLEEP_MS) {
+        restoreCachedTailwind();
+        reparseDocumentStyles();
+        lockBoardChrome();
+        if (gap >= LONG_SLEEP_MS && !screenStylesOk()) {
           reloadForCleanPaint();
           return;
         }
@@ -2662,6 +2940,7 @@
       document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'hidden') {
           hiddenAt = Date.now();
+          cacheTailwindCss();
           return;
         }
         onWake();
@@ -2685,11 +2964,22 @@
         const gap = now - lastTick;
         lastTick = now;
         if (document.visibilityState === 'hidden') return;
-        if (gap >= LONG_SLEEP_MS) reloadForCleanPaint();
+        if (gap >= LONG_SLEEP_MS) {
+          restoreCachedTailwind();
+          reparseDocumentStyles();
+          lockBoardChrome();
+          if (!screenStylesOk()) reloadForCleanPaint();
+          else recoverAfterResume();
+        }
         else if (gap > 15000) recoverAfterResume();
       }, 4000);
 
       lockBoardChrome();
+      window.addEventListener('load', function () {
+        cacheTailwindCss();
+        setTimeout(cacheTailwindCss, 800);
+        setTimeout(cacheTailwindCss, 2500);
+      });
     })();
   </script>
 </body>
