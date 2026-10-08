@@ -276,6 +276,8 @@
       font-size: 19px !important;
       font-weight: 700 !important;
 
+
+
       letter-spacing: -0.5px !important;
       color: #ffffff !important;
     }
@@ -420,6 +422,7 @@
       font-size: 15px !important;
       font-weight: 600 !important;
       color: #334155 !important;
+
       margin-bottom: 6px !important;
       display: block !important;
       letter-spacing: -0.2px !important;
@@ -1115,8 +1118,8 @@
 
         <!-- 실속형 (Blue Column) -->
         <section id="board-blue" data-board="blue" class="board-column bg-white rounded-xl shadow-xs border border-blueBoard-main flex flex-col overflow-hidden transition-all duration-300 mb-2 sm:mb-0">
-          <div class="bg-blueBoard-main py-2 sm:py-2.5 px-2 text-center select-none shadow-xs">
-            <h2 class="board-title-text-blue">실속형</h2>
+          <div class="bg-blueBoard-main py-2 sm:py-2.5 px-2 text-center select-none shadow-xs" style="background-color:#0267c1;color:#ffffff;">
+            <h2 class="board-title-text-blue" style="color:#ffffff;background-color:#0267c1;">실속형</h2>
           </div>
 
           <!-- 실속형 서브헤더 -->
@@ -1134,7 +1137,7 @@
           </div>
 
           <!-- 실속형 합계 -->
-          <div class="bg-blueBoard-main py-2 sm:py-2.5 px-2.5 sm:px-4 flex items-center justify-between border-t border-blue-800 select-none">
+          <div class="bg-blueBoard-main py-2 sm:py-2.5 px-2.5 sm:px-4 flex items-center justify-between border-t border-blue-800 select-none" style="background-color:#0267c1;color:#ffffff;">
             <span class="total-label-text-blue">합계</span>
             <div class="flex items-baseline gap-0.5 sm:gap-1">
               <span id="total-val-blue" class="total-amount-number-blue">0</span>
@@ -1152,8 +1155,8 @@
 
         <!-- 고급형 (Green Column) -->
         <section id="board-green" data-board="green" class="board-column bg-white rounded-xl shadow-xs border border-greenBoard-main flex flex-col overflow-hidden transition-all duration-300">
-          <div class="bg-greenBoard-main py-2 sm:py-2.5 px-2 text-center select-none shadow-xs">
-            <h2 class="board-title-text-green">고급형</h2>
+          <div class="bg-greenBoard-main py-2 sm:py-2.5 px-2 text-center select-none shadow-xs" style="background-color:#13773b;color:#ffffff;">
+            <h2 class="board-title-text-green" style="color:#ffffff;background-color:#13773b;">고급형</h2>
           </div>
 
           <!-- 고급형 서브헤더 -->
@@ -1171,7 +1174,7 @@
           </div>
 
           <!-- 고급형 합계 -->
-          <div class="bg-greenBoard-main py-2 sm:py-2.5 px-2.5 sm:px-4 flex items-center justify-between border-t border-green-800 select-none">
+          <div class="bg-greenBoard-main py-2 sm:py-2.5 px-2.5 sm:px-4 flex items-center justify-between border-t border-green-800 select-none" style="background-color:#13773b;color:#ffffff;">
             <span class="total-label-text-green">합계</span>
             <div class="flex items-baseline gap-0.5 sm:gap-1">
               <span id="total-val-green" class="total-amount-number-green">0</span>
@@ -2446,20 +2449,58 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
+      let resumeSnap = null;
+      try {
+        const raw = sessionStorage.getItem('quote-resume-snapshot');
+        if (raw) {
+          resumeSnap = JSON.parse(raw);
+          sessionStorage.removeItem('quote-resume-snapshot');
+        }
+      } catch (e) {}
+
+      if (resumeSnap && Array.isArray(resumeSnap.blue) && Array.isArray(resumeSnap.green)) {
+        appState.blue = resumeSnap.blue;
+        appState.green = resumeSnap.green;
+      }
+
       renderBoardHTML();
       populateInitialCards();
       initializeSortables();
       calculateTotals();
+
+      if (resumeSnap && resumeSnap.blueFirst === false) {
+        const container = document.getElementById('boards-container');
+        const blue = document.getElementById('board-blue');
+        if (container && blue && container.firstElementChild === blue) {
+          container.appendChild(blue);
+        }
+      }
+
+      if (resumeSnap && Array.isArray(resumeSnap.blue) && resumeSnap.blue.length && resumeSnap.blue.every(function (item) { return item.selected; })) {
+        blueSelectAllFlag = true;
+        document.getElementById('btn-select-all-blue').textContent = '실속형 전체해제';
+      }
+      if (resumeSnap && Array.isArray(resumeSnap.green) && resumeSnap.green.length && resumeSnap.green.every(function (item) { return item.selected; })) {
+        greenSelectAllFlag = true;
+        document.getElementById('btn-select-all-green').textContent = '고급형 전체해제';
+      }
+
+      if (resumeSnap && typeof resumeSnap.scroll === 'number') {
+        window.scrollTo(0, resumeSnap.scroll);
+      }
     });
 
     /* [태블릿 화면 OFF 후 복귀]
-       수 시간~하루 절전으로 Tailwind 스타일이나 화면 합성이 빠져도
-       견적 화면 색/칸은 유지하고, 깨진 그리기만 다시 붙입니다. */
+       몇 시간~며칠 절전 뒤에는 깨진 화면 대신 파일을 다시 그려
+       실속형/고급형 막대와 칸이 그대로 나오게 합니다. */
     (function setupTabletResumeStyleRecovery() {
+      const LONG_SLEEP_MS = 2 * 60 * 1000;
       let recoveringTailwind = false;
       let recoveryToken = 0;
       let lastRecoverAt = 0;
       let lastTick = Date.now();
+      let hiddenAt = 0;
+      let reloading = false;
 
       function isTailwindReady() {
         if (!document.body) return false;
@@ -2483,7 +2524,39 @@
           const el = document.querySelector(pair[0]);
           if (!el) return;
           el.style.setProperty('background-color', pair[1], 'important');
+          el.style.setProperty('color', '#ffffff', 'important');
         });
+        const blueTitle = document.querySelector('.board-title-text-blue');
+        const greenTitle = document.querySelector('.board-title-text-green');
+        if (blueTitle) {
+          blueTitle.style.setProperty('color', '#ffffff', 'important');
+          blueTitle.style.setProperty('background-color', '#0267c1', 'important');
+        }
+        if (greenTitle) {
+          greenTitle.style.setProperty('color', '#ffffff', 'important');
+          greenTitle.style.setProperty('background-color', '#13773b', 'important');
+        }
+      }
+
+      function saveSnapshot() {
+        try {
+          const container = document.getElementById('boards-container');
+          const blue = document.getElementById('board-blue');
+          sessionStorage.setItem('quote-resume-snapshot', JSON.stringify({
+            blue: appState.blue,
+            green: appState.green,
+            blueFirst: !!(container && blue && container.firstElementChild === blue),
+            scroll: window.scrollY
+          }));
+        } catch (e) {}
+      }
+
+      function reloadForCleanPaint() {
+        if (reloading) return;
+        if (document.visibilityState === 'hidden') return;
+        reloading = true;
+        saveSnapshot();
+        location.reload();
       }
 
       function clearStuckDragLayers() {
@@ -2502,28 +2575,21 @@
       }
 
       function forceLayoutRefresh() {
-        const root = document.documentElement;
-        const prev = root.style.display;
-        root.style.display = 'none';
-        void root.offsetHeight;
-        root.style.display = prev;
+        const boards = document.getElementById('boards-container');
+        if (boards) {
+          boards.style.transform = 'translateZ(0)';
+          void boards.offsetHeight;
+          boards.style.transform = '';
+        }
         window.dispatchEvent(new Event('resize'));
         if (window.visualViewport) {
           window.visualViewport.dispatchEvent(new Event('resize'));
         }
       }
 
-      function removeInjectedTailwindStyles() {
-        document.querySelectorAll('style').forEach(function (el) {
-          const text = el.textContent || '';
-          if (text.indexOf('--tw-') !== -1) el.remove();
-        });
-      }
-
       function loadTailwindAgain(done) {
         if (recoveringTailwind) return;
         recoveringTailwind = true;
-        removeInjectedTailwindStyles();
 
         document.querySelectorAll('script[data-tablet-tailwind-recovery="1"]').forEach(function (el) {
           el.remove();
@@ -2566,37 +2632,61 @@
         setTimeout(function () {
           if (myToken !== recoveryToken || document.visibilityState === 'hidden') return;
           lockBoardChrome();
+          const blueBar = document.querySelector('#board-blue > div:first-child');
+          const bg = blueBar ? window.getComputedStyle(blueBar).backgroundColor.replace(/\s/g, '') : '';
+          if (bg && bg !== 'rgb(2,103,193)') {
+            reloadForCleanPaint();
+            return;
+          }
           if (isTailwindReady()) {
             forceLayoutRefresh();
             return;
           }
-          loadTailwindAgain(function (ok) {
-            if (myToken !== recoveryToken) return;
-            if (ok) return;
-            setTimeout(function () {
-              if (myToken !== recoveryToken || document.visibilityState === 'hidden') return;
-              if (!isTailwindReady()) loadTailwindAgain();
-              else forceLayoutRefresh();
-            }, 900);
+          loadTailwindAgain(function () {
+            lockBoardChrome();
+            forceLayoutRefresh();
           });
         }, 180);
       }
 
+      function onWake() {
+        const gap = hiddenAt ? Date.now() - hiddenAt : 0;
+        hiddenAt = 0;
+        if (gap >= LONG_SLEEP_MS) {
+          reloadForCleanPaint();
+          return;
+        }
+        recoverAfterResume();
+      }
+
       document.addEventListener('visibilitychange', function () {
-        if (document.visibilityState === 'visible') recoverAfterResume();
+        if (document.visibilityState === 'hidden') {
+          hiddenAt = Date.now();
+          return;
+        }
+        onWake();
       });
-      document.addEventListener('resume', recoverAfterResume);
-      window.addEventListener('pageshow', recoverAfterResume);
-      window.addEventListener('focus', recoverAfterResume);
+      document.addEventListener('freeze', function () {
+        hiddenAt = Date.now();
+      });
+      document.addEventListener('resume', onWake);
+      window.addEventListener('pagehide', function () {
+        hiddenAt = Date.now();
+      });
+      window.addEventListener('pageshow', onWake);
+      window.addEventListener('focus', onWake);
       window.addEventListener('orientationchange', function () {
         setTimeout(recoverAfterResume, 120);
       });
 
-      /* 화면이 꺼진 동안 멈춘 시계가 다시 돌면, 이벤트가 없어도 복구 */
+      /* 화면이 꺼져 시계가 멈추면, 몇 시간·며칠 뒤에도 켜는 순간 다시 그립니다. */
       setInterval(function () {
         const now = Date.now();
-        if (now - lastTick > 15000) recoverAfterResume();
-        lastTick = Date.now();
+        const gap = now - lastTick;
+        lastTick = now;
+        if (document.visibilityState === 'hidden') return;
+        if (gap >= LONG_SLEEP_MS) reloadForCleanPaint();
+        else if (gap > 15000) recoverAfterResume();
       }, 4000);
 
       lockBoardChrome();
